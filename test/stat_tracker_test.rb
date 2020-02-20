@@ -1,8 +1,6 @@
 require './test/test_helper'
 
 class StatTrackerTest < Minitest::Test
-  attr_reader :locations
-
   def setup
     game_path = './data/games.csv'
     team_path = './data/teams.csv'
@@ -14,7 +12,7 @@ class StatTrackerTest < Minitest::Test
       game_teams: game_teams_path
     }
 
-    @stat_tracker = StatTracker.from_csv(locations)
+    @stat_tracker = StatTracker.from_csv(@locations)
   end
 
   def test_it_returns_an_instance_of_stat_tracker
@@ -22,15 +20,15 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_games_csv_data_exists
-    assert File.exist?(locations[:games])
+    assert File.exist?(@locations[:games])
   end
 
   def test_teams_csv_data_exists
-    assert File.exist?(locations[:teams])
+    assert File.exist?(@locations[:teams])
   end
 
   def test_game_teams_csv_data_exists
-    assert File.exist?(locations[:game_teams])
+    assert File.exist?(@locations[:game_teams])
   end
 
   def test_stat_tracker_games_are_created
