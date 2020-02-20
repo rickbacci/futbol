@@ -2,22 +2,17 @@ require 'csv'
 
 class Parser
   def self.parse(file)
-    if File.exist?(file)
+    objects = []
 
-      objects = []
+    options = {
+      headers: true,
+      header_converters: :symbol
+    }
 
-      options = {
-        headers: true,
-        header_converters: :symbol
-      }
-
-      CSV.foreach(file, options) do |row|
-        objects << row.to_hash
-      end
-
-      objects
-    else
-      return "file not found!"
+    CSV.foreach(file, options) do |row|
+      objects << row.to_hash
     end
+
+    objects
   end
 end
