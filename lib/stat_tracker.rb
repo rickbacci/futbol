@@ -35,4 +35,11 @@ class StatTracker
     end
   end
 
+  def highest_total_score
+    total_goals = games.map do |game|
+      game["away_goals"].to_i + game["home_goals"].to_i
+    end
+    total_goals.sort.last
+  end
+
 end
