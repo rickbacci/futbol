@@ -14,4 +14,6 @@ stat_tracker = StatTracker.from_csv(locations)
 
 puts stat_tracker
 
+teams = stat_tracker.teams
+
 require 'pry'; binding.pry

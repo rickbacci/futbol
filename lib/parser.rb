@@ -5,8 +5,7 @@ class Parser
     objects = []
 
     options = {
-      headers: true,
-      header_converters: :symbol
+      headers: true
     }
 
     CSV.foreach(file, options) do |row|
