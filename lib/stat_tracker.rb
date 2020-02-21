@@ -56,5 +56,16 @@ class StatTracker
     difference_in_score.sort.last
   end
 
+  def percentage_home_wins
+    total_games = games.length
+    total_home_wins = 0.0
+
+    games.each do |game|
+      total_home_wins += 1 if game["home_goals"].to_i > game["away_goals"].to_i
+    end
+
+    (total_home_wins / total_games).round(2)
+  end
+
 
 end
