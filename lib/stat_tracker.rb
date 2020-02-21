@@ -49,5 +49,12 @@ class StatTracker
     total_goals.sort.first
   end
 
+  def biggest_blowout
+    difference_in_score = games.map do |game|
+      (game["away_goals"].to_i - game["home_goals"].to_i).abs
+    end
+    difference_in_score.sort.last
+  end
+
 
 end
