@@ -42,4 +42,12 @@ class StatTracker
     total_goals.sort.last
   end
 
+  def lowest_total_score
+    total_goals = games.map do |game|
+      game["away_goals"].to_i + game["home_goals"].to_i
+    end
+    total_goals.sort.first
+  end
+
+
 end
