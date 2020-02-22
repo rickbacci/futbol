@@ -54,7 +54,45 @@ module TeamStatistics
     foo.sort_by { |k,v| -v }.first[0]
   end
 
+  def worst_season(team_id)
+    # Season with the lowest win percentage for a team.
+    # returns a String i.e. "20132014"
+    foo = {}
+
+    seasons.each do |season|
+      away_games_played_this_season = games.select do |game|
+        (game["away_team_id"] == team_id) && (game["season"] == season)
+      end
+
+      home_games_played_this_season = games.select do |game|
+        (game["home_team_id"] == team_id) && (game["season"] == season)
+      end
+
+      away_games_won_this_season = away_games_played_this_season.select do |game|
+        game["away_goals"].to_f > game["home_goals"].to_f
+      end.size
+
+      home_games_won_this_season = home_games_played_this_season.select do |game|
+        game["home_goals"].to_f > game["away_goals"].to_f
+      end.size
+
+      total_games_played_this_season =
+        home_games_played_this_season.size + away_games_played_this_season.size
+
+      total_games_won_this_season =
+        home_games_won_this_season + away_games_won_this_season
+
+      winning_percent_this_season =
+        total_games_won_this_season / total_games_played_this_season.to_f
+
+      foo[season] = winning_percent_this_season
+    end
+
+    foo.sort_by { |k,v| v }.first[0]
+  end
+
   private
+
 
   def seasons
     games.map { |game| game["season"] }.uniq.sort
