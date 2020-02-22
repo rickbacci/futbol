@@ -91,6 +91,35 @@ module TeamStatistics
     foo.sort_by { |k,v| v }.first[0]
   end
 
+  def average_win_percentage(team_id)
+    # Average win percentage of all games for a team.
+    # returns a Float
+
+    away_games_played = games.select do |game|
+      (game["away_team_id"] == team_id)
+    end
+
+    home_games_played = games.select do |game|
+      (game["home_team_id"] == team_id)
+    end
+
+    away_games_won = away_games_played.select do |game|
+      game["away_goals"].to_f > game["home_goals"].to_f
+    end.size
+
+    home_games_won = home_games_played.select do |game|
+      game["home_goals"].to_f > game["away_goals"].to_f
+    end.size
+
+    total_games_played =
+      home_games_played.size + away_games_played.size
+
+    total_games_won =
+      home_games_won + away_games_won
+
+    (total_games_won / total_games_played.to_f).round(2)
+  end
+
   private
 
 
