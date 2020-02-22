@@ -376,4 +376,26 @@ module LeagueStatistics
 
     foo.sort_by { |k,v| -v }.first[0]
   end
+
+  # List of names of all teams with better away records than home records.
+  def worst_fans
+    foo = []
+    teams.each do |team|
+      team_name = team["teamName"]
+
+      away_games_won = games.select do |game|
+        (game["away_team_id"] == team["team_id"]) &&
+          (game["away_goals"] > game["home_goals"])
+      end.size
+
+      home_games_won = games.select do |game|
+        (game["home_team_id"] == team["team_id"]) &&
+          (game["home_goals"] > game["away_goals"])
+      end.size
+
+      foo << team_name if away_games_won > home_games_won
+    end
+
+    foo
+  end
 end
