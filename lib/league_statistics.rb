@@ -284,5 +284,4 @@ module LeagueStatistics
     foo.sort_by { |k,v| v }.first[0]
   end
 
-
 end
