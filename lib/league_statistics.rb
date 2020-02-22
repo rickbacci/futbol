@@ -284,4 +284,35 @@ module LeagueStatistics
     foo.sort_by { |k,v| v }.first[0]
   end
 
+  # Name of the team with the highest win percentage
+  # across all seasons.
+  def winningest_team
+    foo = {}
+
+    teams.each do |team|
+      team_name = team["teamName"]
+
+      away_games = games.select do |game|
+        game["away_team_id"] == team["team_id"]
+      end
+
+      away_games_won = away_games.select { |game| game["away_goals"].to_f > game["home_goals"].to_f }.size
+
+      home_games = games.select do |game|
+        game["home_team_id"] == team["team_id"]
+      end
+
+      home_games_won = away_games.select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
+
+      total_games_won = home_games_won + away_games_won
+      total_games_played = away_games.size + home_games.size
+
+      winning_percent = total_games_won / total_games_played.to_f
+
+      foo[team_name] = winning_percent
+    end
+
+    x = foo.sort_by { |k,v| -v }.first[0]
+    # require 'pry'; binding.pry;
+  end
 end
