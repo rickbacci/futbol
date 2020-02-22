@@ -89,5 +89,16 @@ class StatTracker
     (total_tie_games / total_games).round(2)
   end
 
+  def count_of_games_by_season
+    seasons = games.map { |game| game["season"] }.uniq.sort
+    games_by_season = {}
+
+    seasons.map do |season|
+      total_games = games.select { |game| game["season"] == season }.count
+        games_by_season["#{season}"] = total_games
+    end
+
+    games_by_season
+  end
 
 end
