@@ -295,14 +295,44 @@ module LeagueStatistics
       away_games = games.select do |game|
         game["away_team_id"] == team["team_id"]
       end
+      # 232
+
+      # away_games = games.select do |game|
+      #   game_teams_stats = game_teams.select do |game_team|
+      #     game_team["game_id"] == game["game_id"]
+      #   end
+
+      #   if game_teams_stats.first["team_id"] == team["team_id"]
+      #     true
+      #   else
+      #     false
+      #   end
+      # end
+      # 232
+
 
       away_games_won = away_games.select { |game| game["away_goals"].to_f > game["home_goals"].to_f }.size
+      # 76
+
+      # away_games_won = away_games.select do |game|
+      #   # find matching game_team_stats
+      #   stats = game_teams.select do |game_team|
+      #     game_team["game_id"] == game["game_id"]
+      #   end
+
+      #   if stats.first["team_id"] == team["team_id"] && stats.first["result"] == 'WIN'
+      #     true
+      #   else
+      #     false
+      #   end
+      # end.size
+      # 76
 
       home_games = games.select do |game|
         game["home_team_id"] == team["team_id"]
       end
 
-      home_games_won = away_games.select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
+      home_games_won = home_games.select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
 
       total_games_won = home_games_won + away_games_won
       total_games_played = away_games.size + home_games.size
@@ -312,7 +342,6 @@ module LeagueStatistics
       foo[team_name] = winning_percent
     end
 
-    x = foo.sort_by { |k,v| -v }.first[0]
-    # require 'pry'; binding.pry;
+    foo.sort_by { |k,v| -v }.first[0]
   end
 end
