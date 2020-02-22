@@ -95,7 +95,7 @@ class StatTracker
 
     seasons.map do |season|
       total_games = games.select { |game| game["season"] == season }.count
-        games_by_season["#{season}"] = total_games
+      games_by_season["#{season}"] = total_games
     end
 
     games_by_season
@@ -109,6 +109,27 @@ class StatTracker
 
     total_goals = total_goals_per_game.reduce(:+)
     (total_goals / total_games).round(2)
+  end
+
+  def average_goals_by_season
+    seasons = games.map { |game| game["season"] }.uniq
+    average_goals_by_season = {}
+
+    seasons.map do |season|
+      season_games = games.select { |game| game["season"] == season }
+      total_season_games = season_games.count
+
+      total_goals_per_season = season_games.map do |game|
+        game["away_goals"].to_f + game["home_goals"].to_f
+      end
+      total_goals = total_goals_per_season.reduce(:+)
+
+      average_goals = total_goals / total_season_games
+
+      average_goals_by_season["#{season}"] = average_goals.round(2)
+    end
+
+    average_goals_by_season
   end
 
 end
