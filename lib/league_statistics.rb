@@ -344,4 +344,36 @@ module LeagueStatistics
 
     foo.sort_by { |k,v| -v }.first[0]
   end
+
+  # Name of the team with biggest difference between home and away win
+  # percentages.
+  def best_fans
+    foo = {}
+
+    teams.each do |team|
+      team_name = team["teamName"]
+
+      away_games = games.select do |game|
+        game["away_team_id"] == team["team_id"]
+      end
+
+      home_games = games.select do |game|
+        game["home_team_id"] == team["team_id"]
+      end
+
+      away_games_won = away_games.select { |game| game["away_goals"].to_f > game["home_goals"].to_f }.size
+      away_games_played = away_games.size
+      away_games_win_percentage = away_games_won / away_games_played.to_f
+
+      home_games_won = home_games.select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
+      home_games_played = home_games.size
+      home_games_win_percentage = home_games_won / home_games_played.to_f
+
+      winning_percent_difference = (away_games_win_percentage - home_games_win_percentage).abs.round(2)
+
+      foo[team_name] = winning_percent_difference
+    end
+
+    foo.sort_by { |k,v| -v }.first[0]
+  end
 end
