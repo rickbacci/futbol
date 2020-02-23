@@ -140,6 +140,27 @@ module TeamStatistics
     (away_goals_scored + home_goals_scored).sort.last
   end
 
+  def fewest_goals_scored(team_id)
+    # Fewest number of goals a particular team has scored in a single game.
+    # returns Integer
+
+    away_games_played = games.select do |game|
+      (game["away_team_id"] == team_id)
+    end
+
+    home_games_played = games.select do |game|
+      (game["home_team_id"] == team_id)
+    end
+
+    away_goals_scored =
+      away_games_played.map { |game| game["away_goals"].to_i }
+
+    home_goals_scored =
+      home_games_played.map { |game| game["home_goals"].to_i }
+
+    (away_goals_scored + home_goals_scored).sort.first
+  end
+
 
   private
 
