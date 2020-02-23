@@ -283,6 +283,50 @@ module TeamStatistics
     foo.sort_by { |k,v| -v }.first[1]
   end
 
+  def worst_loss(team_id)
+    # Biggest difference between team goals and
+    # opponent goals for a loss for the given team.
+    foo = {}
+    opponents = teams.select { |team| team["team_id"] != team_id }
+
+    opponents.each do |opponent|
+      opponent_name = opponent["teamName"]
+
+      away_games_played = games.select do |game|
+        (game["away_team_id"] == team_id) &&
+          (game["home_team_id"] == opponent["team_id"])
+      end
+
+      home_games_played = games.select do |game|
+        (game["home_team_id"] == team_id) &&
+          (game["away_team_id"] == opponent["team_id"])
+      end
+
+      away_games_lost = away_games_played.select do |game|
+        game["away_goals"].to_i < game["home_goals"].to_i
+      end
+
+      away_games_score_difference = away_games_lost.map do |game|
+        (game["away_goals"].to_i - game["home_goals"].to_i).abs
+      end
+
+      home_games_lost = home_games_played.select do |game|
+        game["home_goals"].to_i < game["away_goals"].to_i
+      end
+
+      home_games_score_difference = home_games_lost.map do |game|
+        (game["away_goals"].to_i - game["home_goals"].to_i).abs
+      end
+        difference =
+          (away_games_score_difference + home_games_score_difference).sort.last
+
+      # set difference to 0 if value is nil
+      foo[opponent_name] = difference || 0
+    end
+
+    foo.sort_by { |k,v| -v }.first[1]
+  end
+
 
   private
 
