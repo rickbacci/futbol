@@ -201,6 +201,47 @@ module TeamStatistics
     foo.sort_by { |k,v| -v }.first[0]
   end
 
+  def rival(team_id)
+    # Name of the opponent that has the highest win
+    # percentage against the given team.
+    # returns String
+    foo = {}
+    opponents = teams.select { |team| team["team_id"] != team_id }
+
+    opponents.each do |opponent|
+      opponent_name = opponent["teamName"]
+
+      away_games_played = games.select do |game|
+        (game["away_team_id"] == team_id) &&
+          (game["home_team_id"] == opponent["team_id"])
+      end
+
+      home_games_played = games.select do |game|
+        (game["home_team_id"] == team_id) &&
+          (game["away_team_id"] == opponent["team_id"])
+      end
+
+      away_games_won = away_games_played.select do |game|
+        game["away_goals"].to_f > game["home_goals"].to_f
+      end.size
+
+      home_games_won = home_games_played.select do |game|
+        game["home_goals"].to_f > game["away_goals"].to_f
+      end.size
+
+      total_games_played =
+        home_games_played.size + away_games_played.size
+
+      total_games_won =
+        home_games_won + away_games_won
+
+      foo[opponent_name] = (total_games_won / total_games_played.to_f).round(2)
+    end
+
+    foo.sort_by { |k,v| v }.first[0]
+  end
+
+
   private
 
 
