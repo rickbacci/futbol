@@ -1,6 +1,5 @@
 module TeamStatistics
 
-
   def team_info(team_id)
     # A hash with key/value pairs for the following attributes:
     # team_id, franchise_id, team_name, abbreviation, and link
