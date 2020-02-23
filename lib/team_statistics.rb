@@ -327,6 +327,49 @@ module TeamStatistics
     foo.sort_by { |k,v| -v }.first[1]
   end
 
+  def head_to_head(team_id)
+    # Record (as a hash - win/loss) against all opponents
+    # with the opponents' names as keys and the win percentage
+    # against that opponent as a value.
+    foo = {}
+    opponents = teams.select { |team| team["team_id"] != team_id }
+
+    opponents.each do |opponent|
+      opponent_name = opponent["teamName"]
+
+      away_games_played = games.select do |game|
+        (game["away_team_id"] == team_id) &&
+          (game["home_team_id"] == opponent["team_id"])
+      end
+
+      home_games_played = games.select do |game|
+        (game["home_team_id"] == team_id) &&
+          (game["away_team_id"] == opponent["team_id"])
+      end
+
+      away_games_won = away_games_played.select do |game|
+        game["away_goals"].to_f > game["home_goals"].to_f
+      end
+
+      home_games_won = home_games_played.select do |game|
+        game["home_goals"].to_f > game["away_goals"].to_f
+      end
+
+      total_games_played =
+        home_games_played.size + away_games_played.size
+
+      total_games_won =
+        home_games_won.size + away_games_won.size
+
+      winning_percent =
+        (total_games_won / total_games_played.to_f).round(2)
+
+      foo[opponent_name] = winning_percent
+    end
+
+    foo
+  end
+
 
   private
 
