@@ -376,11 +376,9 @@ module TeamStatistics
     # that each point to a hash with the following keys:
     # :win_percentage, :total_goals_scored, :total_goals_against,
     # :average_goals_scored, :average_goals_against.
-    foo = {}
+    summary = {}
 
-    # foobar = games.map { |game| game["season"] }.uniq
-    foobar = ["20122013"]
-    foobar.sort.each do |season|
+    seasons.sort.each do |season|
 
       # Home and away games played in the regular season
       away_games_played_regular_season = games.select do |game|
@@ -469,10 +467,6 @@ module TeamStatistics
         home_games_played_regular_season.map do |game|
           game["away_goals"].to_i
         end
-      total_goals_against_regular_season =
-        (away_goals_against_regular_season +
-         home_goals_against_regular_season).reduce(:+) || 0
-
 
       # total_goals_against_post_season
       away_goals_against_post_season =
@@ -483,9 +477,6 @@ module TeamStatistics
         home_games_played_post_season.map do |game|
           game["away_goals"].to_i
         end
-      total_goals_against_post_season =
-        (away_goals_against_post_season +
-         home_goals_against_post_season).reduce(:+) || 0
 
       # average_goals_against_regular_season
       regular_season_goals_against =
@@ -503,30 +494,33 @@ module TeamStatistics
       regular_season_goals_scored =
         (away_goals_scored_regular_season + home_goals_scored_regular_season)
 
-      foo[season] = {
+      summary[season] = {
         :postseason => {
           :win_percentage => winning_percent_by_season(total_games_won_post_season, total_games_played_post_season),
           :total_goals_scored => total_goals_scored_by_season(away_goals_scored_post_season, home_goals_scored_post_season),
-          :total_goals_against => total_goals_against_post_season,
+          :total_goals_against => total_goals_against_by_season(away_goals_against_post_season, home_goals_against_post_season),
           :average_goals_scored => average_goals_scored_by_season(post_season_goals_scored),
           :average_goals_against => average_goals_against_by_season(post_season_goals_against)
         },
         :regular_season => {
           :win_percentage => winning_percent_by_season(total_games_won_regular_season, total_games_played_regular_season),
           :total_goals_scored => total_goals_scored_by_season(away_goals_scored_regular_season, home_goals_scored_regular_season),
-          :total_goals_against => total_goals_against_regular_season,
+          :total_goals_against => total_goals_against_by_season(away_goals_against_regular_season, home_goals_against_regular_season),
           :average_goals_scored => average_goals_scored_by_season(regular_season_goals_scored),
           :average_goals_against => average_goals_against_by_season(regular_season_goals_against)
         }
       }
     end
 
-    foo
+    summary
   end
 
 
   private
 
+  def total_goals_against_by_season(away_goals_against, home_goals_against)
+    (away_goals_against + home_goals_against).reduce(:+) || 0
+  end
 
   def total_goals_scored_by_season(away_goals_scored, home_goals_scored)
     (away_goals_scored + home_goals_scored).reduce(:+) || 0
