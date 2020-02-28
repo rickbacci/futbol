@@ -2,11 +2,13 @@ require_relative './parser'
 require_relative './game_statistics'
 require_relative './team_statistics'
 require_relative './league_statistics'
+require_relative './season_statistics'
 
 class StatTracker
   include GameStatistics
   include TeamStatistics
   include LeagueStatistics
+  include SeasonStatistics
 
   attr_reader :teams, :games, :game_teams
 
