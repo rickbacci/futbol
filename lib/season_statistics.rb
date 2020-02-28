@@ -17,6 +17,23 @@ module SeasonStatistics
     foo.sort_by { |k,v| -v }.first[0]
   end
 
+  def biggest_surprise(season)
+    # Name of the team with the biggest increase between
+    # regular season and postseason win percentage.
+    foo = {}
+
+    teams.each do |team|
+      team_name = team["teamName"]
+
+      x = winning_percentage(team, season, :regular)
+      y = winning_percentage(team, season, :post)
+
+      foo[team_name] = ( x + y ).abs.round(2)
+    end
+
+    foo.sort_by { |k,v| -v }.first[0]
+  end
+
 
   private
 
