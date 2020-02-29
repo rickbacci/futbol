@@ -34,11 +34,61 @@ module SeasonStatistics
     foo.sort_by { |k,v| -v }.first[0]
   end
 
+  def winningest_coach(season)
+    # Name of the Coach with the best win percentage for the season
+    coaches = game_teams.map { |team| team["head_coach"] }.uniq
+    season_games = games.select { |game| game["season"] == season }
+    season_game_ids = season_games.map { |game| game["game_id"] }
+
+    season_game_teams = game_teams.select { |game|
+      season_game_ids.include? game["game_id"]
+    }
+
+    foo = {}
+    coaches.each do |coach|
+      foo[coach] = []
+
+      season_games.each do |game|
+        game_id = game["game_id"]
+
+        teams = season_game_teams.select do |team|
+          team["game_id"] == game_id
+        end
+
+        team = teams.select { |team| team["head_coach"] == coach }
+        next if team.empty?
+
+        game_data = {
+          game_id: team[0]['game_id'],
+          result: team[0]['result'],
+        }
+
+        foo[coach] << game_data
+      end
+
+      games_coached = foo[coach].size
+      games_won = foo[coach].select { |game| game[:result] == "WIN" }.size
+      winning_percentage =
+        games_coached == 0 ? 0.0 : (games_won / games_coached.to_f).round(2)
+
+      season_coaching_data = {
+        games_coached: games_coached,
+        games_won: games_won,
+        winning_percentage: winning_percentage
+      }
+
+      foo[coach] = season_coaching_data
+    end
+
+    foo.sort_by { |k,v| -k }.sort_by { |k,v| -v[:winning_percentage] }.first[0]
+  end
+
 
   private
 
 
   def game_type(game, type)
+    return true if type == :all
     return (game["type"] == "Regular Season") if type == :regular
     (game["type"] == "Postseason")
   end
@@ -65,20 +115,20 @@ module SeasonStatistics
         game["away_goals"].to_f > game["home_goals"].to_f
       end.size
 
-    home_games_won_this_season =
-      home_games_played_this_season.select do |game|
-        game["home_goals"].to_f > game["away_goals"].to_f
-      end.size
+      home_games_won_this_season =
+        home_games_played_this_season.select do |game|
+          game["home_goals"].to_f > game["away_goals"].to_f
+        end.size
 
-    games_played =
-      home_games_played_this_season.size +
-      away_games_played_this_season.size
+        games_played =
+          home_games_played_this_season.size +
+          away_games_played_this_season.size
 
-    games_won =
-      home_games_won_this_season +
-      away_games_won_this_season
+        games_won =
+          home_games_won_this_season +
+          away_games_won_this_season
 
-    winning_percent_this_season(games_played, games_won)
+        winning_percent_this_season(games_played, games_won)
   end
 
   def winning_percent_this_season(games_played, games_won)
