@@ -210,6 +210,37 @@ module SeasonStatistics
       .sort_by { |k, v| k }.sort_by { |k,v| v[:shots_to_goals_ratio] }.first[0]
   end
 
+  def most_tackles(season)
+    # Name of the Team with the most tackles in the season
+    season_games = games.select { |game| game["season"] == season }
+    season_game_ids = season_games.map { |game| game["game_id"] }
+
+    season_game_teams = game_teams.select { |game|
+      season_game_ids.include? game["game_id"]
+    }
+
+    foo = {}
+    teams.each do |team|
+      team_id = team["team_id"]
+      team_name = team["teamName"]
+
+      z = season_game_teams.select { |team| team["team_id"] == team_id }
+
+      tackles = z.reduce(0) { |sum, v| sum + v["tackles"].to_i }
+
+        team_data = {
+          tackles: tackles
+        }
+
+      foo[team_name] = team_data
+    end
+
+
+    foo.select { |k, v| v[:tackles] != 0 }
+      .sort_by { |k,v| v[:tackles] }
+      .last[0]
+  end
+
 
   private
 
