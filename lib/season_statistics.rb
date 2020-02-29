@@ -173,6 +173,43 @@ module SeasonStatistics
       .sort_by { |k,v| v[:shots_to_goals_ratio] }.last[0]
   end
 
+  def least_accurate_team(season)
+    # Name of the Team with the best ratio of shots to goals for the season
+    season_games = games.select { |game| game["season"] == season }
+    season_game_ids = season_games.map { |game| game["game_id"] }
+
+    season_game_teams = game_teams.select { |game|
+      season_game_ids.include? game["game_id"]
+    }
+
+    foo = {}
+    teams.each do |team|
+      team_id = team["team_id"]
+      team_name = team["teamName"]
+
+      z = season_game_teams.select { |team| team["team_id"] == team_id }
+      # add shots and goals..figure percent
+
+      goals = z.reduce(0) { |sum, v| sum + v["goals"].to_i }
+      shots = z.reduce(0) { |sum, v| sum + v["shots"].to_i }
+
+      if shots == 0
+        team_data = {
+          shots_to_goals_ratio: 0.0
+        }
+      else
+        team_data = {
+          shots_to_goals_ratio: (goals / shots.to_f).round(2)
+        }
+      end
+
+      foo[team_name] = team_data
+    end
+
+    foo.select { |k, v| v[:shots_to_goals_ratio] != 0.0 }
+      .sort_by { |k, v| k }.sort_by { |k,v| v[:shots_to_goals_ratio] }.first[0]
+  end
+
 
   private
 
