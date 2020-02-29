@@ -83,6 +83,57 @@ module SeasonStatistics
     foo.sort_by { |k,v| -k }.sort_by { |k,v| -v[:winning_percentage] }.first[0]
   end
 
+  def worst_coach(season)
+    # Name of the Coach with the best win percentage for the season
+    coaches = game_teams.map { |team| team["head_coach"] }.uniq
+    season_games = games.select { |game| game["season"] == season }
+    season_game_ids = season_games.map { |game| game["game_id"] }
+
+    season_game_teams = game_teams.select { |game|
+      season_game_ids.include? game["game_id"]
+    }
+
+    foo = {}
+    coaches.each do |coach|
+      foo[coach] = []
+
+      season_games.each do |game|
+        game_id = game["game_id"]
+
+        teams = season_game_teams.select do |team|
+          team["game_id"] == game_id
+        end
+
+        team = teams.select { |team| team["head_coach"] == coach }
+        next if team.empty?
+
+        game_data = {
+          game_id: team[0]['game_id'],
+          result: team[0]['result'],
+        }
+
+        foo[coach] << game_data
+      end
+
+      games_coached = foo[coach].size
+      games_won = foo[coach].select { |game| game[:result] == "WIN" }.size
+      winning_percentage =
+        games_coached == 0 ? 0.0 : (games_won / games_coached.to_f).round(2)
+
+      season_coaching_data = {
+        games_coached: games_coached,
+        games_won: games_won,
+        winning_percentage: winning_percentage
+      }
+
+      foo[coach] = season_coaching_data
+    end
+
+    foo
+      .select { |k, v| v[:games_coached] != 0 }
+      .sort_by { |k,v| -k }.sort_by { |k,v| v[:winning_percentage] }.first[0]
+  end
+
 
   private
 
