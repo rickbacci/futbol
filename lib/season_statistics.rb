@@ -174,7 +174,7 @@ module SeasonStatistics
   end
 
   def least_accurate_team(season)
-    # Name of the Team with the best ratio of shots to goals for the season
+    # Name of the Team with the worst ratio of shots to goals for the season
     season_games = games.select { |game| game["season"] == season }
     season_game_ids = season_games.map { |game| game["game_id"] }
 
