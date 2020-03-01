@@ -30,7 +30,9 @@ module LeagueStatistics
       end.reduce(:+) / home_games.size
 
       highest_average =
-        average_goals_home > average_goals_away ? average_goals_home.round(2) : average_goals_away.round(2)
+        average_goals_home > average_goals_away ?
+        average_goals_home.round(2) :
+        average_goals_away.round(2)
 
       team_name = team["teamName"]
 
