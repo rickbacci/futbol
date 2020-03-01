@@ -11,14 +11,9 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
-      average_goals_away = away_games.map do |game|
+      average_goals_away = away_games(team).map do |game|
         game["away_goals"].to_f
-      end.reduce(:+) / away_games.size
+      end.reduce(:+) / away_games(team).size
 
 
       home_games = games.select do |game|
@@ -48,14 +43,9 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
-      average_goals_away = away_games.map do |game|
+      average_goals_away = away_games(team).map do |game|
         game["away_goals"].to_f
-      end.reduce(:+) / away_games.size
+      end.reduce(:+) / away_games(team).size
 
 
       home_games = games.select do |game|
@@ -85,15 +75,9 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
-      # track the other teams goals
-      average_goals_away = away_games.map do |game|
+      average_goals_away = away_games(team).map do |game|
         game["home_goals"].to_f
-      end.reduce(:+) / away_games.size
+      end.reduce(:+) / away_games(team).size
 
 
       home_games = games.select do |game|
@@ -124,15 +108,9 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
-      # track the other teams goals
-      average_goals_away = away_games.map do |game|
+      average_goals_away = away_games(team).map do |game|
         game["home_goals"].to_f
-      end.reduce(:+) / away_games.size
+      end.reduce(:+) / away_games(team).size
 
 
       home_games = games.select do |game|
@@ -166,13 +144,9 @@ module LeagueStatistics
     teams.each do |team|
       team_name = team["teamName"]
 
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
-      average_goals_away = away_games.map do |game|
+      average_goals_away = away_games(team).map do |game|
         game["away_goals"].to_f
-      end.reduce(:+) / away_games.size
+      end.reduce(:+) / away_games(team).size
 
       foo[team_name] = average_goals_away.round(2)
     end
@@ -210,13 +184,9 @@ module LeagueStatistics
     teams.each do |team|
       team_name = team["teamName"]
 
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
-      average_goals_away = away_games.map do |game|
+      average_goals_away = away_games(team).map do |game|
         game["away_goals"].to_f
-      end.reduce(:+) / away_games.size
+      end.reduce(:+) / away_games(team).size
 
       foo[team_name] = average_goals_away.round(2)
     end
@@ -254,12 +224,10 @@ module LeagueStatistics
     teams.each do |team|
       team_name = team["teamName"]
 
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
       away_games_won =
-        away_games.select { |game| game["away_goals"].to_f > game["home_goals"].to_f }.size
+        away_games(team).select do |game|
+          game["away_goals"].to_f > game["home_goals"].to_f
+        end.size
 
       home_games = games.select do |game|
         game["home_team_id"] == team["team_id"]
@@ -269,7 +237,7 @@ module LeagueStatistics
         .select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
 
       total_games_won = home_games_won + away_games_won
-      total_games_played = away_games.size + home_games.size
+      total_games_played = away_games(team).size + home_games.size
 
       winning_percent = total_games_won / total_games_played.to_f
 
@@ -287,17 +255,13 @@ module LeagueStatistics
     teams.each do |team|
       team_name = team["teamName"]
 
-      away_games = games.select do |game|
-        game["away_team_id"] == team["team_id"]
-      end
-
       home_games = games.select do |game|
         game["home_team_id"] == team["team_id"]
       end
 
       away_games_won =
-        away_games.select { |game| game["away_goals"].to_f > game["home_goals"].to_f }.size
-      away_games_played = away_games.size
+        away_games(team).select { |game| game["away_goals"].to_f > game["home_goals"].to_f }.size
+      away_games_played = away_games(team).size
       away_games_win_percentage = away_games_won / away_games_played.to_f
 
       home_games_won =
@@ -337,4 +301,15 @@ module LeagueStatistics
 
     foo
   end
+
+
+  private
+
+
+    def away_games(team)
+      games.select do |game|
+        game["away_team_id"] == team["team_id"]
+      end
+    end
+
 end
