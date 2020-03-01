@@ -148,7 +148,7 @@ module LeagueStatistics
 
     teams.each do |team|
       team_name = team["teamName"]
-      foo << team_name if away_games_won(team) > home_games_won(team)
+      foo << team_name if total_away_games_won(team) > total_home_games_won(team)
     end
 
     foo
@@ -164,11 +164,11 @@ module LeagueStatistics
     end
 
     def away_games_win_percentage(team)
-      away_games_won(team) / total_away_games_played(team)
+      total_away_games_won(team) / total_away_games_played(team)
     end
 
     def home_games_win_percentage(team)
-      home_games_won(team) / total_home_games_played(team)
+      total_home_games_won(team) / total_home_games_played(team)
     end
 
     def away_games(team)
@@ -203,13 +203,13 @@ module LeagueStatistics
       end.reduce(:+) / home_games(team).size.to_f
     end
 
-    def away_games_won(team)
+    def total_away_games_won(team)
       away_games(team).select do |game|
         game["away_goals"].to_f > game["home_goals"].to_f
       end.size
     end
 
-    def home_games_won(team)
+    def total_home_games_won(team)
       home_games(team).select do |game|
         game["home_goals"].to_f > game["away_goals"].to_f
       end.size
@@ -221,7 +221,7 @@ module LeagueStatistics
     end
 
     def total_games_won(team)
-      home_games_won(team) + away_games_won(team)
+      total_home_games_won(team) + total_away_games_won(team)
     end
 
     def total_games_played(team)
