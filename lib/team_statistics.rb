@@ -132,13 +132,8 @@ module TeamStatistics
     opponents.each do |opponent|
       opponent_name = opponent["teamName"]
 
-      away_games_lost =
-        away_games_played_by_opponent(team_id, opponent).select do |game|
-          game["away_goals"].to_i < game["home_goals"].to_i
-        end
-
       away_games_score_difference =
-        away_games_lost.map do |game|
+        away_games_lost(team_id, opponent).map do |game|
           (game["away_goals"].to_i - game["home_goals"].to_i).abs
         end
 
@@ -421,6 +416,12 @@ module TeamStatistics
     end.size
   end
 
+  def away_games_lost(team_id, opponent)
+    away_games_played_by_opponent(team_id, opponent).select do |game|
+      game["away_goals"].to_i < game["home_goals"].to_i
+    end
+  end
+
   def total_games_played_by_season(team_id, season)
     home_games_played_by_season(team_id, season).size +
     away_games_played_by_season(team_id, season).size
@@ -455,5 +456,11 @@ module TeamStatistics
   def home_goals_scored(team_id)
     home_games_played(team_id).map { |game| game["home_goals"].to_i }
   end
+
+  def total_games_played(team_id)
+    home_games_played(team_id).size +
+    away_games_played(team_id).size
+  end
+
 
 end
