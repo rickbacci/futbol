@@ -1,100 +1,106 @@
 module GameStatistics
 
   def highest_total_score
-    total_goals = games.map do |game|
-      game["away_goals"].to_i + game["home_goals"].to_i
-    end
-    total_goals.sort.last
+    games.map { |game| total_score(game) }.sort.last
   end
 
   def lowest_total_score
-    total_goals = games.map do |game|
-      game["away_goals"].to_i + game["home_goals"].to_i
-    end
-    total_goals.sort.first
+    games.map { |game| total_score(game) }.sort.first
   end
 
   def biggest_blowout
-    difference_in_score = games.map do |game|
-      (game["away_goals"].to_i - game["home_goals"].to_i).abs
-    end
-    difference_in_score.sort.last
+    games.map { |game| difference_in_score(game) }.sort.last
   end
 
   def percentage_home_wins
-    total_games = games.length
-    total_home_wins = 0.0
-
-    games.each do |game|
-      total_home_wins += 1 if game["home_goals"].to_i > game["away_goals"].to_i
-    end
+    total_home_wins = 0
+    games.each { |game| total_home_wins += 1 if home_wins(game) }
 
     (total_home_wins / total_games).round(2)
   end
 
   def percentage_visitor_wins
-    total_games = games.length
-    total_visitor_wins = 0.0
-
-    games.each do |game|
-      total_visitor_wins += 1 if game["home_goals"].to_i < game["away_goals"].to_i
-    end
+    total_visitor_wins = 0
+    games.each { |game| total_visitor_wins += 1 if visitor_wins(game) }
 
     (total_visitor_wins / total_games).round(2)
   end
 
   def percentage_ties
-    total_games = games.length
-    total_tie_games = 0.0
-
-    games.each do |game|
-      total_tie_games += 1 if game["home_goals"].to_i == game["away_goals"].to_i
-    end
+    total_tie_games = 0
+    games.each { |game| total_tie_games += 1 if tie(game) }
 
     (total_tie_games / total_games).round(2)
   end
 
   def count_of_games_by_season
-    seasons = games.map { |game| game["season"] }.uniq.sort
-    games_by_season = {}
+    games = {}
+    seasons.each { |season| games["#{season}"] = total_season_games(season) }
 
-    seasons.map do |season|
-      total_games = games.select { |game| game["season"] == season }.count
-      games_by_season["#{season}"] = total_games
-    end
-
-    games_by_season
+    games
   end
 
   def average_goals_per_game
-    total_games = games.count
-    total_goals_per_game = games.map do |game|
-      game["away_goals"].to_f + game["home_goals"].to_f
-    end
-
-    total_goals = total_goals_per_game.reduce(:+)
-    (total_goals / total_games).round(2)
+    (total_goals_per_game / total_games).round(2)
   end
 
   def average_goals_by_season
-    seasons = games.map { |game| game["season"] }.uniq
-    average_goals_by_season = {}
+    average_goals = {}
+    seasons.each { |season| average_goals["#{season}"] = average_goals(season) }
 
-    seasons.map do |season|
-      season_games = games.select { |game| game["season"] == season }
-      total_season_games = season_games.count
+    average_goals
+  end
 
-      total_goals_per_season = season_games.map do |game|
-        game["away_goals"].to_f + game["home_goals"].to_f
-      end
-      total_goals = total_goals_per_season.reduce(:+)
 
-      average_goals = total_goals / total_season_games
+  private
 
-      average_goals_by_season["#{season}"] = average_goals.round(2)
-    end
 
-    average_goals_by_season
+  def seasons
+    games.map { |game| game["season"] }.uniq.sort
+  end
+
+  def season_games(season)
+    games.select { |game| game["season"] == season }
+  end
+
+  def total_games
+    games.length.to_f
+  end
+
+  def total_season_games(season)
+    games.select { |game| game["season"] == season }.count.to_f
+  end
+
+  def visitor_wins(game)
+    game["home_goals"].to_i < game["away_goals"].to_i
+  end
+
+  def home_wins(game)
+    game["home_goals"].to_i > game["away_goals"].to_i
+  end
+
+  def tie(game)
+    game["home_goals"].to_i == game["away_goals"].to_i
+  end
+
+  def total_score(game)
+    game["away_goals"].to_i + game["home_goals"].to_i
+  end
+
+  def difference_in_score(game)
+    (game["away_goals"].to_i - game["home_goals"].to_i).abs
+  end
+
+  def total_goals_per_game
+    games.map { |game| total_score(game) }.reduce(:+)
+  end
+
+  def total_goals_per_season(season)
+    season_games(season).map { |game| total_score(game) }.reduce(:+)
+  end
+
+  def average_goals(season)
+    (total_goals_per_season(season) / total_season_games(season)).round(2)
   end
 
 end
