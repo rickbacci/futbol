@@ -18,11 +18,7 @@ module TeamStatistics
     foo = {}
 
     seasons.each do |season|
-        winning_percent_this_season =
-          total_games_won_by_season(team_id, season) /
-          total_games_played_by_season(team_id, season).to_f
-
-        foo[season] = winning_percent_this_season
+      foo[season] = winning_percent_by_season(team_id, season)
     end
 
     foo.sort_by { |k,v| -v }.first[0]
@@ -32,11 +28,7 @@ module TeamStatistics
     foo = {}
 
     seasons.each do |season|
-          winning_percent_this_season =
-            total_games_won_by_season(team_id, season) /
-            total_games_played_by_season(team_id, season).to_f
-
-          foo[season] = winning_percent_this_season
+      foo[season] = winning_percent_by_season(team_id, season)
     end
 
     foo.sort_by { |k,v| v }.first[0]
@@ -371,14 +363,14 @@ module TeamStatistics
 
               summary[season] = {
                 :postseason => {
-                  :win_percentage => winning_percent_by_season(total_games_won_post_season, total_games_played_post_season),
+                  :win_percentage => winning_percent_by_season_type(total_games_won_post_season, total_games_played_post_season),
                   :total_goals_scored => total_goals_scored_by_season(away_goals_scored_post_season, home_goals_scored_post_season),
                   :total_goals_against => total_goals_against_by_season(away_goals_against_post_season, home_goals_against_post_season),
                   :average_goals_scored => average_goals_scored_by_season(post_season_goals_scored),
                   :average_goals_against => average_goals_against_by_season(post_season_goals_against)
                 },
                 :regular_season => {
-                  :win_percentage => winning_percent_by_season(total_games_won_regular_season, total_games_played_regular_season),
+                  :win_percentage => winning_percent_by_season_type(total_games_won_regular_season, total_games_played_regular_season),
                   :total_goals_scored => total_goals_scored_by_season(away_goals_scored_regular_season, home_goals_scored_regular_season),
                   :total_goals_against => total_goals_against_by_season(away_goals_against_regular_season, home_goals_against_regular_season),
                   :average_goals_scored => average_goals_scored_by_season(regular_season_goals_scored),
@@ -402,7 +394,7 @@ module TeamStatistics
     (away_goals_scored + home_goals_scored).reduce(:+) || 0
   end
 
-  def winning_percent_by_season(games_won, games_played)
+  def winning_percent_by_season_type(games_won, games_played)
     return 0.0 if games_played == 0
     (games_won / games_played.to_f).round(2)
   end
@@ -482,6 +474,11 @@ module TeamStatistics
   def total_games_won_by_season(team_id, season)
     home_games_won_by_season(team_id, season) +
     away_games_won_by_season(team_id, season)
+  end
+
+  def winning_percent_by_season(team_id, season)
+    total_games_won_by_season(team_id, season) /
+    total_games_played_by_season(team_id, season).to_f
   end
 
 end
