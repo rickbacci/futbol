@@ -18,17 +18,13 @@ module TeamStatistics
     foo = {}
 
     seasons.each do |season|
-        total_games_played_this_season =
-          home_games_played_by_season(team_id, season).size +
-          away_games_played_by_season(team_id, season).size
-
         total_games_won_this_season =
           home_games_won_by_season(team_id, season) +
           away_games_won_by_season(team_id, season)
 
         winning_percent_this_season =
           total_games_won_this_season /
-          total_games_played_this_season.to_f
+          total_games_played_by_season(team_id, season).to_f
 
         foo[season] = winning_percent_this_season
     end
@@ -40,17 +36,13 @@ module TeamStatistics
     foo = {}
 
     seasons.each do |season|
-          total_games_played_this_season =
-            home_games_played_by_season(team_id, season).size +
-            away_games_played_by_season(team_id, season).size
-
           total_games_won_this_season =
             home_games_won_by_season(team_id, season) +
             away_games_won_by_season(team_id, season)
 
           winning_percent_this_season =
             total_games_won_this_season /
-            total_games_played_this_season.to_f
+            total_games_played_by_season(team_id, season).to_f
 
           foo[season] = winning_percent_this_season
     end
@@ -488,6 +480,11 @@ module TeamStatistics
     away_games_played(team_id).select do |game|
       game["away_goals"].to_f > game["home_goals"].to_f
     end.size
+  end
+
+  def total_games_played_by_season(team_id, season)
+    home_games_played_by_season(team_id, season).size +
+    away_games_played_by_season(team_id, season).size
   end
 
 
