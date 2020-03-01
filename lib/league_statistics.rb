@@ -164,7 +164,7 @@ module LeagueStatistics
     end
 
     def away_games_win_percentage(team)
-      away_games_won(team) / away_games_played(team)
+      away_games_won(team) / total_away_games_played(team)
     end
 
     def home_games_win_percentage(team)
@@ -177,7 +177,7 @@ module LeagueStatistics
       end
     end
 
-    def away_games_played(team)
+    def total_away_games_played(team)
       away_games(team).size.to_f
     end
 
