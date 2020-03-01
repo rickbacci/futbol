@@ -253,18 +253,9 @@ module SeasonStatistics
       .first[0]
   end
 
+
   private
 
-
-    # season_game_ids = season_games(season).map { |game| game["game_id"] }
-
-    # season_game_teams = game_teams.select { |game|
-    #   season_game_ids.include? game["game_id"]
-    # }
-  # def season_game_teams(season)
-  #   season_game_ids = season_games(season).map { |game| game["game_id"] }
-  #   game_teams.select { |game| season_game_ids.include? game["game_id"] }
-  # end
 
   def season_games(season)
     games.select { |game| game["season"] == season }
