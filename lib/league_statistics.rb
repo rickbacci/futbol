@@ -8,13 +8,8 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      highest_average =
-        average_goals_home(team) > average_goals_away(team) ?
-        average_goals_home(team) : average_goals_away(team)
-
       team_name = team["teamName"]
-
-      foo[team_name] = highest_average
+      foo[team_name] = highest_average(team)
     end
 
     foo.sort_by { |k,v| -v }.first[0]
@@ -24,14 +19,8 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      highest_average =
-        average_goals_home(team) > average_goals_away(team) ?
-        average_goals_home(team).round(2) :
-        average_goals_away(team)
-
       team_name = team["teamName"]
-
-      foo[team_name] = highest_average
+      foo[team_name] = highest_average(team)
     end
 
     foo.sort_by { |k,v| -v }.last[0]
@@ -103,7 +92,6 @@ module LeagueStatistics
 
     teams.each do |team|
       team_name = team["teamName"]
-
       foo[team_name] = average_goals_home(team)
     end
 
@@ -115,7 +103,6 @@ module LeagueStatistics
 
     teams.each do |team|
       team_name = team["teamName"]
-
       foo[team_name] = average_goals_away(team)
     end
 
@@ -127,7 +114,6 @@ module LeagueStatistics
 
     teams.each do |team|
       team_name = team["teamName"]
-
       foo[team_name] = average_goals_home(team)
     end
 
@@ -140,15 +126,7 @@ module LeagueStatistics
     teams.each do |team|
       team_name = team["teamName"]
 
-      home_games_won = home_games(team)
-        .select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
-
-      total_games_won = home_games_won + away_games_won(team)
-      total_games_played = away_games(team).size + home_games(team).size
-
-      winning_percent = total_games_won / total_games_played.to_f
-
-      foo[team_name] = winning_percent
+      foo[team_name] = winning_percent(team)
     end
 
     foo.sort_by { |k,v| -v }.first[0]
@@ -159,19 +137,7 @@ module LeagueStatistics
 
     teams.each do |team|
       team_name = team["teamName"]
-
-      away_games_played = away_games(team).size
-      away_games_win_percentage = away_games_won(team) / away_games_played.to_f
-
-      home_games_won =
-        home_games(team).select { |game| game["home_goals"].to_f > game["away_goals"].to_f }.size
-      home_games_played = home_games(team).size
-      home_games_win_percentage = home_games_won / home_games_played.to_f
-
-      winning_percent_difference =
-        (away_games_win_percentage - home_games_win_percentage).abs.round(2)
-
-      foo[team_name] = winning_percent_difference
+      foo[team_name] = home_away_winning_percent_difference(team)
     end
 
     foo.sort_by { |k,v| -v }.first[0]
@@ -182,13 +148,7 @@ module LeagueStatistics
 
     teams.each do |team|
       team_name = team["teamName"]
-
-      home_games_won = games.select do |game|
-        (game["home_team_id"] == team["team_id"]) &&
-          (game["home_goals"] > game["away_goals"])
-      end.size
-
-      foo << team_name if away_games_won(team) > home_games_won
+      foo << team_name if away_games_won(team) > home_games_won(team)
     end
 
     foo
@@ -198,16 +158,37 @@ module LeagueStatistics
   private
 
 
+    def home_away_winning_percent_difference(team)
+      (away_games_win_percentage(team) - home_games_win_percentage(team))
+        .abs.round(2)
+    end
+
+    def away_games_win_percentage(team)
+      away_games_won(team) / away_games_played(team)
+    end
+
+    def home_games_win_percentage(team)
+      home_games_won(team) / home_games_played(team)
+    end
+
     def away_games(team)
       games.select do |game|
         game["away_team_id"] == team["team_id"]
       end
     end
 
+    def away_games_played(team)
+      away_games(team).size.to_f
+    end
+
     def home_games(team)
       games.select do |game|
         game["home_team_id"] == team["team_id"]
       end
+    end
+
+    def home_games_played(team)
+      home_games(team).size.to_f
     end
 
     def average_goals_away(team)
@@ -227,4 +208,28 @@ module LeagueStatistics
         game["away_goals"].to_f > game["home_goals"].to_f
       end.size
     end
+
+    def home_games_won(team)
+      home_games(team).select do |game|
+        game["home_goals"].to_f > game["away_goals"].to_f
+      end.size
+    end
+
+    def highest_average(team)
+      average_goals_home(team) > average_goals_away(team) ?
+      average_goals_home(team) : average_goals_away(team)
+    end
+
+    def total_games_won(team)
+      home_games_won(team) + away_games_won(team)
+    end
+
+    def total_games_played(team)
+      (away_games(team).size + home_games(team).size).to_f
+    end
+
+    def winning_percent(team)
+      total_games_won(team) / total_games_played(team)
+    end
+
 end
