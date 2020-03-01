@@ -69,20 +69,17 @@ module TeamStatistics
   end
 
   def average_win_percentage(team_id)
-    home_games_played = games.select do |game|
-      (game["home_team_id"] == team_id)
-    end
-
     away_games_won = away_games_played(team_id).select do |game|
       game["away_goals"].to_f > game["home_goals"].to_f
     end.size
 
-    home_games_won = home_games_played.select do |game|
+    home_games_won = home_games_played(team_id).select do |game|
       game["home_goals"].to_f > game["away_goals"].to_f
     end.size
 
     total_games_played =
-      home_games_played.size + away_games_played(team_id).size
+      home_games_played(team_id).size +
+      away_games_played(team_id).size
 
     total_games_won =
       home_games_won + away_games_won
@@ -91,29 +88,21 @@ module TeamStatistics
   end
 
   def most_goals_scored(team_id)
-    home_games_played = games.select do |game|
-      (game["home_team_id"] == team_id)
-    end
-
     away_goals_scored =
       away_games_played(team_id).map { |game| game["away_goals"].to_i }
 
     home_goals_scored =
-      home_games_played.map { |game| game["home_goals"].to_i }
+      home_games_played(team_id).map { |game| game["home_goals"].to_i }
 
     (away_goals_scored + home_goals_scored).sort.last
   end
 
   def fewest_goals_scored(team_id)
-    home_games_played = games.select do |game|
-      (game["home_team_id"] == team_id)
-    end
-
     away_goals_scored =
       away_games_played(team_id).map { |game| game["away_goals"].to_i }
 
     home_goals_scored =
-      home_games_played.map { |game| game["home_goals"].to_i }
+      home_games_played(team_id).map { |game| game["home_goals"].to_i }
 
     (away_goals_scored + home_goals_scored).sort.first
   end
@@ -125,10 +114,10 @@ module TeamStatistics
     opponents.each do |opponent|
       opponent_name = opponent["teamName"]
 
-      home_games_played = games.select do |game|
-        (game["home_team_id"] == team_id) &&
-          (game["away_team_id"] == opponent["team_id"])
-      end
+      # home_games_played = games.select do |game|
+      #   (game["home_team_id"] == team_id) &&
+      #     (game["away_team_id"] == opponent["team_id"])
+      # end
 
       away_games_won =
         away_games_played_by_opponent(team_id, opponent).select do |game|
@@ -136,12 +125,12 @@ module TeamStatistics
         end.size
 
         home_games_won =
-          home_games_played.select do |game|
+          home_games_played_by_opponent(team_id, opponent).select do |game|
             game["home_goals"].to_f > game["away_goals"].to_f
           end.size
 
           total_games_played =
-            home_games_played.size +
+            home_games_played_by_opponent(team_id, opponent).size +
             away_games_played_by_opponent(team_id, opponent).size
 
           total_games_won =
@@ -160,22 +149,23 @@ module TeamStatistics
     opponents.each do |opponent|
       opponent_name = opponent["teamName"]
 
-      home_games_played = games.select do |game|
-        (game["home_team_id"] == team_id) &&
-          (game["away_team_id"] == opponent["team_id"])
-      end
+      # home_games_played = games.select do |game|
+      #   (game["home_team_id"] == team_id) &&
+      #     (game["away_team_id"] == opponent["team_id"])
+      # end
 
       away_games_won =
         away_games_played_by_opponent(team_id, opponent).select do |game|
           game["away_goals"].to_f > game["home_goals"].to_f
         end.size
 
-        home_games_won = home_games_played.select do |game|
+        home_games_won =
+          home_games_played_by_opponent(team_id, opponent).select do |game|
           game["home_goals"].to_f > game["away_goals"].to_f
         end.size
 
         total_games_played =
-          home_games_played.size +
+          home_games_played_by_opponent(team_id, opponent).size +
           away_games_played_by_opponent(team_id, opponent).size
 
         total_games_won =
@@ -195,10 +185,10 @@ module TeamStatistics
     opponents.each do |opponent|
       opponent_name = opponent["teamName"]
 
-      home_games_played = games.select do |game|
-        (game["home_team_id"] == team_id) &&
-          (game["away_team_id"] == opponent["team_id"])
-      end
+      # home_games_played = games.select do |game|
+      #   (game["home_team_id"] == team_id) &&
+      #     (game["away_team_id"] == opponent["team_id"])
+      # end
 
       away_games_won =
         away_games_played_by_opponent(team_id, opponent).select do |game|
@@ -209,7 +199,8 @@ module TeamStatistics
         (game["away_goals"].to_i - game["home_goals"].to_i).abs
       end
 
-      home_games_won = home_games_played.select do |game|
+      home_games_won =
+        home_games_played_by_opponent(team_id, opponent).select do |game|
         game["home_goals"].to_f > game["away_goals"].to_f
       end
 
@@ -231,10 +222,10 @@ module TeamStatistics
     opponents.each do |opponent|
       opponent_name = opponent["teamName"]
 
-      home_games_played = games.select do |game|
-        (game["home_team_id"] == team_id) &&
-          (game["away_team_id"] == opponent["team_id"])
-      end
+      # home_games_played = games.select do |game|
+      #   (game["home_team_id"] == team_id) &&
+      #     (game["away_team_id"] == opponent["team_id"])
+      # end
 
       away_games_lost =
         away_games_played_by_opponent(team_id, opponent).select do |game|
@@ -246,7 +237,8 @@ module TeamStatistics
           (game["away_goals"].to_i - game["home_goals"].to_i).abs
         end
 
-      home_games_lost = home_games_played.select do |game|
+      home_games_lost =
+        home_games_played_by_opponent(team_id, opponent).select do |game|
         game["home_goals"].to_i < game["away_goals"].to_i
       end
 
@@ -269,22 +261,23 @@ module TeamStatistics
     opponents.each do |opponent|
       opponent_name = opponent["teamName"]
 
-      home_games_played = games.select do |game|
-        (game["home_team_id"] == team_id) &&
-          (game["away_team_id"] == opponent["team_id"])
-      end
+      # home_games_played = games.select do |game|
+      #   (game["home_team_id"] == team_id) &&
+      #     (game["away_team_id"] == opponent["team_id"])
+      # end
 
       away_games_won =
         away_games_played_by_opponent(team_id, opponent).select do |game|
           game["away_goals"].to_f > game["home_goals"].to_f
         end
 
-      home_games_won = home_games_played.select do |game|
+      home_games_won =
+        home_games_played_by_opponent(team_id, opponent).select do |game|
         game["home_goals"].to_f > game["away_goals"].to_f
       end
 
       total_games_played =
-        home_games_played.size +
+        home_games_played_by_opponent(team_id, opponent).size +
         away_games_played_by_opponent(team_id, opponent).size
 
       total_games_won =
@@ -494,11 +487,22 @@ module TeamStatistics
     games.select { |game| (game["away_team_id"] == team_id) }
   end
 
+  def home_games_played(team_id)
+    games.select { |game| (game["home_team_id"] == team_id) }
+  end
+
 
   def away_games_played_by_opponent(team_id, opponent)
     games.select do |game|
       (game["away_team_id"] == team_id) &&
         (game["home_team_id"] == opponent["team_id"])
+    end
+  end
+
+  def home_games_played_by_opponent(team_id, opponent)
+    games.select do |game|
+      (game["home_team_id"] == team_id) &&
+        (game["away_team_id"] == opponent["team_id"])
     end
   end
 
@@ -513,6 +517,7 @@ module TeamStatistics
       game["away_goals"].to_f > game["home_goals"].to_f
     end.size
   end
+
 
 
 
