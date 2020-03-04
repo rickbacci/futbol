@@ -6,9 +6,11 @@ module Common
     end
   end
 
-  def away_games_played(team_id)
+  def away_games_played(team_id, season = :all, type = :all)
     games.select do |game|
-      game["away_team_id"] == team_id
+      (game["away_team_id"] == team_id) &&
+        season_check(game, season) &&
+        game_type(game, type)
     end
   end
 
@@ -36,37 +38,30 @@ module Common
 
   def winning_percentage(team_id, season = :all, type = :all)
 
-    away_games_played_this_season =
-      games.select do |game|
-        (game["away_team_id"] == team_id) &&
-          season_check(game, season) &&
-          game_type(game, type)
-      end
-
-    home_games_played_this_season =
+    home_games_played =
       games.select do |game|
         (game["home_team_id"] == team_id) &&
           season_check(game, season) &&
           game_type(game, type)
       end
 
-    away_games_won_this_season =
-      away_games_played_this_season.select do |game|
+    away_games_won =
+      away_games_played(team_id, season, type).select do |game|
         game["away_goals"].to_f > game["home_goals"].to_f
       end.size
 
-      home_games_won_this_season =
-        home_games_played_this_season.select do |game|
+      home_games_won =
+        home_games_played.select do |game|
           game["home_goals"].to_f > game["away_goals"].to_f
         end.size
 
         games_played =
-          home_games_played_this_season.size +
-          away_games_played_this_season.size
+          home_games_played.size +
+          away_games_played(team_id, season, type).size
 
         games_won =
-          home_games_won_this_season +
-          away_games_won_this_season
+          home_games_won +
+          away_games_won
 
         winning_percent(games_played, games_won)
   end
@@ -77,9 +72,14 @@ module Common
   end
 
   def game_type(game, type)
-    return true if type == :all
-    return (game["type"] == "Regular Season") if type == :regular
-    (game["type"] == "Postseason")
+    case type
+    when :regular
+      (game["type"] == "Regular Season")
+    when :post
+      (game["type"] == "Postseason")
+    else # :all
+      true
+    end
   end
 
   def season_check(game, season)
