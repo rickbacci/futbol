@@ -16,8 +16,8 @@ module Common
     end
   end
 
-  def total_games_played(team_id)
-    (away_games_played(team_id).size +
+  def total_games_played(team_id, season = :all, type = :all)
+    (away_games_played(team_id, season, type).size +
      home_games_played(team_id).size).to_f
   end
 
@@ -27,23 +27,18 @@ module Common
     end.size
   end
 
-  def total_away_games_won(team_id)
-    away_games_played(team_id).select do |game|
+  def total_away_games_won(team_id, season = :all, type = :all)
+    away_games_played(team_id, season, type).select do |game|
       game["away_goals"].to_f > game["home_goals"].to_f
     end.size
   end
 
-  def total_games_won(team_id)
+  def total_games_won(team_id, season = :all, type = :all)
     total_home_games_won(team_id) +
-      total_away_games_won(team_id)
+      total_away_games_won(team_id, season, type)
   end
 
   def winning_percentage(team_id, season = :all, type = :all)
-
-    away_games_won =
-      away_games_played(team_id, season, type).select do |game|
-        game["away_goals"].to_f > game["home_goals"].to_f
-      end.size
 
       home_games_won =
         home_games_played(team_id, season, type).select do |game|
@@ -56,7 +51,7 @@ module Common
 
         games_won =
           home_games_won +
-          away_games_won
+          total_away_games_won(team_id, season, type)
 
         winning_percent(games_played, games_won)
   end
