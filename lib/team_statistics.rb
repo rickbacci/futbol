@@ -295,37 +295,12 @@ module TeamStatistics
   end
 
   # by game
-  def away_games_played(team_id)
-    games.select { |game| (game["away_team_id"] == team_id) }
-  end
-
-  def home_games_played(team_id)
-    games.select { |game| (game["home_team_id"] == team_id) }
-  end
-
-  def away_games_won(team_id)
-    away_games_played(team_id).select do |game|
-      game["away_goals"].to_f > game["home_goals"].to_f
-    end.size
-  end
-
-  def home_games_won(team_id)
-    home_games_played(team_id).select do |game|
-      game["home_goals"].to_f > game["away_goals"].to_f
-    end.size
-  end
-
   def away_goals_scored(team_id)
     away_games_played(team_id).map { |game| game["away_goals"].to_i }
   end
 
   def home_goals_scored(team_id)
     home_games_played(team_id).map { |game| game["home_goals"].to_i }
-  end
-
-  # TODO: move to common module
-  def total_games_played(team_id)
-    (away_games(team_id).size + home_games(team_id).size).to_f
   end
 
   # by season
@@ -444,11 +419,6 @@ module TeamStatistics
   def winning_percent_by_opponent(team_id, opponent)
     (total_games_won_by_opponent(team_id, opponent) /
      total_games_played_by_opponent(team_id, opponent).to_f).round(2)
-  end
-
-  def total_games_won(team_id)
-    home_games_won(team_id) +
-    away_games_won(team_id)
   end
 
 end
