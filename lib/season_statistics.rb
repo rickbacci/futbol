@@ -268,16 +268,5 @@ module SeasonStatistics
     game_teams.map { |team| team["head_coach"] }.uniq
   end
 
-  def game_type(game, type)
-    return true if type == :all
-    return (game["type"] == "Regular Season") if type == :regular
-    (game["type"] == "Postseason")
-  end
-
-  def season_check(game, season)
-    return true if season == :all
-    (game["season"] == season)
-  end
-
 end
 
