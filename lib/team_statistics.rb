@@ -1,6 +1,8 @@
 module TeamStatistics
 
   def team_info(team_id)
+    # A hash with key/value pairs for the following attributes:
+    # team_id, franchise_id, team_name, abbreviation, and link
     teams.each do |team|
       if team["team_id"] == team_id
         return {
@@ -15,6 +17,7 @@ module TeamStatistics
   end
 
   def best_season(team_id)
+    # Season with the highest win percentage for a team.
     foo = {}
 
     seasons.each do |season|
@@ -25,25 +28,19 @@ module TeamStatistics
   end
 
   def worst_season(team_id)
+    # Season with the lowest win percentage for a team.
     foo = {}
 
     seasons.each do |season|
       foo[season] = winning_percent_by_season(team_id, season)
    end
 
-    foo.sort_by { |k,v| v }.first[0]
+    foo.sort_by { |k,v| -v }.last[0]
   end
 
   def average_win_percentage(team_id)
-    total_games_played =
-      home_games_played(team_id).size +
-      away_games_played(team_id).size
-
-    total_games_won =
-      home_games_won(team_id) +
-      away_games_won(team_id)
-
-    (total_games_won / total_games_played.to_f).round(2)
+    # Average win percentage of all games for a team.
+    (total_games_won(team_id) / total_games_played(team_id)).round(2)
   end
 
   def most_goals_scored(team_id)
@@ -326,9 +323,9 @@ module TeamStatistics
     home_games_played(team_id).map { |game| game["home_goals"].to_i }
   end
 
+  # TODO: move to common module
   def total_games_played(team_id)
-    home_games_played(team_id).size +
-      away_games_played(team_id).size
+    (away_games(team_id).size + home_games(team_id).size).to_f
   end
 
   # by season
@@ -447,6 +444,11 @@ module TeamStatistics
   def winning_percent_by_opponent(team_id, opponent)
     (total_games_won_by_opponent(team_id, opponent) /
      total_games_played_by_opponent(team_id, opponent).to_f).round(2)
+  end
+
+  def total_games_won(team_id)
+    home_games_won(team_id) +
+    away_games_won(team_id)
   end
 
 end
