@@ -1,8 +1,10 @@
 module Common
 
-  def home_games_played(team_id)
+  def home_games_played(team_id, season = :all, type = :all)
     games.select do |game|
-      game["home_team_id"] == team_id
+      (game["home_team_id"] == team_id) &&
+        season_check(game, season) &&
+        game_type(game, type)
     end
   end
 
@@ -38,25 +40,18 @@ module Common
 
   def winning_percentage(team_id, season = :all, type = :all)
 
-    home_games_played =
-      games.select do |game|
-        (game["home_team_id"] == team_id) &&
-          season_check(game, season) &&
-          game_type(game, type)
-      end
-
     away_games_won =
       away_games_played(team_id, season, type).select do |game|
         game["away_goals"].to_f > game["home_goals"].to_f
       end.size
 
       home_games_won =
-        home_games_played.select do |game|
+        home_games_played(team_id, season, type).select do |game|
           game["home_goals"].to_f > game["away_goals"].to_f
         end.size
 
         games_played =
-          home_games_played.size +
+          home_games_played(team_id, season, type).size +
           away_games_played(team_id, season, type).size
 
         games_won =
