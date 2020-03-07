@@ -68,7 +68,7 @@ module GameStatistics
   end
 
   def total_season_games(season)
-    games.select { |game| game["season"] == season }.count.to_f
+    season_games(season).count.to_f
   end
 
   def visitor_wins(game)
