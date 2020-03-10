@@ -38,6 +38,7 @@ module Common
       away_games_played(team_id, season, type)
   end
 
+
   private
 
 

@@ -154,7 +154,6 @@ module TeamStatistics
           game["home_goals"].to_i
         end
 
-      # total_goals_scored_regular_season
       away_goals_scored_regular_season =
         away_games_played(team_id, season, :regular).map do |game|
           game["away_goals"].to_i
@@ -206,14 +205,14 @@ module TeamStatistics
       summary[season] = {
         :postseason => {
           :win_percentage => winning_percentage(team_id, season, :post),
-          :total_goals_scored => total_goals_scored_by_season(away_goals_scored_post_season, home_goals_scored_post_season),
+          :total_goals_scored => total_goals_scored(team_id, season, :post),
           :total_goals_against => total_goals_against_by_season(away_goals_against_post_season, home_goals_against_post_season),
           :average_goals_scored => average_goals_scored_by_season(post_season_goals_scored),
           :average_goals_against => average_goals_against_by_season(post_season_goals_against)
         },
         :regular_season => {
           :win_percentage => winning_percentage(team_id, season, :regular),
-          :total_goals_scored => total_goals_scored_by_season(away_goals_scored_regular_season, home_goals_scored_regular_season),
+          :total_goals_scored => total_goals_scored(team_id, season, :regular),
           :total_goals_against => total_goals_against_by_season(away_goals_against_regular_season, home_goals_against_regular_season),
           :average_goals_scored => average_goals_scored_by_season(regular_season_goals_scored),
           :average_goals_against => average_goals_against_by_season(regular_season_goals_against)
@@ -233,12 +232,12 @@ module TeamStatistics
   end
 
   # by game
-  def away_goals_scored(team_id)
-    away_games_played(team_id).map { |game| game["away_goals"].to_i }
+  def away_goals_scored(team_id, season = :all, type = :all)
+    away_games_played(team_id, season, type).map { |game| game["away_goals"].to_i }
   end
 
-  def home_goals_scored(team_id)
-    home_games_played(team_id).map { |game| game["home_goals"].to_i }
+  def home_goals_scored(team_id, season = :all, type = :all)
+    home_games_played(team_id, season, type).map { |game| game["home_goals"].to_i }
   end
 
   # by season
@@ -246,8 +245,9 @@ module TeamStatistics
     (away_goals_against + home_goals_against).reduce(:+) || 0
   end
 
-  def total_goals_scored_by_season(away_goals_scored, home_goals_scored)
-    (away_goals_scored + home_goals_scored).reduce(:+) || 0
+  def total_goals_scored(team_id, season = :all, type = :all)
+    (away_goals_scored(team_id, season, type) +
+     home_goals_scored(team_id, season, type)).reduce(:+) || 0
   end
 
   def average_goals_against_by_season(goals_against)
