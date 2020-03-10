@@ -14,7 +14,7 @@ module Common
     games_played = total_games_played(team_id, season, type)
     games_won = total_games_won(team_id, season, type)
 
-    winning_percent(games_played, games_won)
+    winning_percent(games_played, games_won).round(2)
   end
 
   def home_games_played(team_id, season = :all, type = :all)
