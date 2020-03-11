@@ -59,10 +59,6 @@ module GameStatistics
     games.map { |game| game['season'] }.uniq.sort
   end
 
-  def season_games(season)
-    games.select { |game| game['season'] == season }
-  end
-
   def total_games
     games.length.to_f
   end

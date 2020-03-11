@@ -122,8 +122,7 @@ module SeasonStatistics
 
   def most_accurate_team(season)
     # Name of the Team with the best ratio of shots to goals for the season
-    season_games = games.select { |game| game['season'] == season }
-    season_game_ids = season_games.map { |game| game['game_id'] }
+    season_game_ids = season_games(season).map { |game| game['game_id'] }
 
     season_game_teams = game_teams.select do |game|
       season_game_ids.include? game['game_id']
@@ -160,8 +159,7 @@ module SeasonStatistics
 
   def least_accurate_team(season)
     # Name of the Team with the worst ratio of shots to goals for the season
-    season_games = games.select { |game| game['season'] == season }
-    season_game_ids = season_games.map { |game| game['game_id'] }
+    season_game_ids = season_games(season).map { |game| game['game_id'] }
 
     season_game_teams = game_teams.select do |game|
       season_game_ids.include? game['game_id']
@@ -198,8 +196,7 @@ module SeasonStatistics
 
   def most_tackles(season)
     # Name of the Team with the most tackles in the season
-    season_games = games.select { |game| game['season'] == season }
-    season_game_ids = season_games.map { |game| game['game_id'] }
+    season_game_ids = season_games(season).map { |game| game['game_id'] }
 
     season_game_teams = game_teams.select do |game|
       season_game_ids.include? game['game_id']
@@ -227,8 +224,7 @@ module SeasonStatistics
 
   def fewest_tackles(season)
     # Name of the Team with the fewest tackles in the season
-    season_games = games.select { |game| game['season'] == season }
-    season_game_ids = season_games.map { |game| game['game_id'] }
+    season_game_ids = season_games(season).map { |game| game['game_id'] }
 
     season_game_teams = game_teams.select do |game|
       season_game_ids.include? game['game_id']
@@ -255,10 +251,6 @@ module SeasonStatistics
   end
 
   private
-
-  def season_games(season)
-    games.select { |game| game['season'] == season }
-  end
 
   def coaches
     game_teams.map { |team| team['head_coach'] }.uniq

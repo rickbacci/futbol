@@ -2,6 +2,10 @@
 
 # comment
 module Common
+  def season_games(season)
+    games.select { |game| game['season'] == season }
+  end
+
   def total_games_played(team_id, season = :all, type = :all)
     (away_games_played(team_id, season, type).size +
      home_games_played(team_id, season, type).size).to_f
