@@ -52,7 +52,6 @@ module LeagueStatistics
   def worst_defense
     # Name of the team with the highest average number
     # of goals allowed per game across all seasons.
-
     foo = {}
 
     teams.each do |team|
