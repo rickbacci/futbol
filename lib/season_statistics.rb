@@ -40,11 +40,7 @@ module SeasonStatistics
 
   def winningest_coach(season)
     # Name of the Coach with the best win percentage for the season
-    season_game_ids = season_games(season).map { |game| game['game_id'] }
-
-    season_game_teams = game_teams.select do |game|
-      season_game_ids.include? game['game_id']
-    end
+    season_game_teams = season_game_teams(season)
 
     foo = {}
     coaches.each do |coach|
@@ -80,11 +76,7 @@ module SeasonStatistics
 
   def worst_coach(season)
     # Name of the Coach with the worst win percentage for the season
-    season_game_ids = season_games(season).map { |game| game['game_id'] }
-
-    season_game_teams = game_teams.select do |game|
-      season_game_ids.include? game['game_id']
-    end
+    season_game_teams = season_game_teams(season)
 
     foo = {}
     coaches.each do |coach|
@@ -122,50 +114,29 @@ module SeasonStatistics
 
   def most_accurate_team(season)
     # Name of the Team with the best ratio of shots to goals for the season
-    season_game_ids = season_games(season).map { |game| game['game_id'] }
-
-    season_game_teams = game_teams.select do |game|
-      season_game_ids.include? game['game_id']
-    end
-
+    season_game_teams = season_game_teams(season)
     foo = {}
+
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
 
       z = season_game_teams.select { |t| t['team_id'] == team_id }
-      # add shots and goals..figure percent
 
       goals = z.reduce(0) { |sum, v| sum + v['goals'].to_i }
       shots = z.reduce(0) { |sum, v| sum + v['shots'].to_i }
 
-      if shots.zero?
-        team_data = {
-          shots_to_goals_ratio: 0.0
-        }
-      else
-        team_data = {
-          shots_to_goals_ratio: (goals / shots.to_f).round(2)
-        }
-      end
-
-      foo[team_name] = team_data
+      foo[team_name] = shots_to_goals_ratio(shots, goals)
     end
 
-    foo
-      .reject { |_k, v| v[:shots_to_goals_ratio] == 0.0 }
-      .max_by { |_k, v| v[:shots_to_goals_ratio] }[0]
+    foo.reject { |_k, v| v == 0.0 }.max_by { |_k, v| v }[0]
   end
 
   def least_accurate_team(season)
     # Name of the Team with the worst ratio of shots to goals for the season
-    season_game_ids = season_games(season).map { |game| game['game_id'] }
-
-    season_game_teams = game_teams.select do |game|
-      season_game_ids.include? game['game_id']
-    end
-
+    season_game_teams = season_game_teams(season)
     foo = {}
+
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
@@ -176,33 +147,19 @@ module SeasonStatistics
       goals = z.reduce(0) { |sum, v| sum + v['goals'].to_i }
       shots = z.reduce(0) { |sum, v| sum + v['shots'].to_i }
 
-      if shots.zero?
-        team_data = {
-          shots_to_goals_ratio: 0.0
-        }
-      else
-        team_data = {
-          shots_to_goals_ratio: (goals / shots.to_f).round(2)
-        }
-      end
-
-      foo[team_name] = team_data
+      foo[team_name] = shots_to_goals_ratio(shots, goals)
     end
 
-    foo.reject { |_k, v| v[:shots_to_goals_ratio] == 0.0 }
+    foo.reject { |_k, v| v == 0.0 }
        .sort_by { |k, _v| k }
-       .sort_by { |_k, v| v[:shots_to_goals_ratio] }.first[0]
+       .sort_by { |_k, v| v }.first[0]
   end
 
   def most_tackles(season)
     # Name of the Team with the most tackles in the season
-    season_game_ids = season_games(season).map { |game| game['game_id'] }
-
-    season_game_teams = game_teams.select do |game|
-      season_game_ids.include? game['game_id']
-    end
-
+    season_game_teams = season_game_teams(season)
     foo = {}
+
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
@@ -224,13 +181,9 @@ module SeasonStatistics
 
   def fewest_tackles(season)
     # Name of the Team with the fewest tackles in the season
-    season_game_ids = season_games(season).map { |game| game['game_id'] }
-
-    season_game_teams = game_teams.select do |game|
-      season_game_ids.include? game['game_id']
-    end
-
+    season_game_teams = season_game_teams(season)
     foo = {}
+
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
@@ -254,5 +207,19 @@ module SeasonStatistics
 
   def coaches
     game_teams.map { |team| team['head_coach'] }.uniq
+  end
+
+  def season_game_teams(season)
+    season_game_ids = season_games(season).map { |game| game['game_id'] }
+
+    game_teams.select do |game|
+      season_game_ids.include? game['game_id']
+    end
+  end
+
+  def shots_to_goals_ratio(shots, goals)
+    return 0.0 if shots.zero?
+
+    (goals / shots.to_f).round(2)
   end
 end
