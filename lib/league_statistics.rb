@@ -1,5 +1,7 @@
-module LeagueStatistics
+# frozen_string_literal: true
 
+# comment
+module LeagueStatistics
   def count_of_teams
     # Total number of teams in the data.
     teams.size
@@ -11,12 +13,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_scored_per_game(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.first[0]
+    foo.min_by { |_k, v| -v }[0]
   end
 
   def worst_offense
@@ -25,12 +27,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_scored_per_game(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.last[0]
+    foo.max_by { |_k, v| -v }[0]
   end
 
   def best_defense
@@ -39,12 +41,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_allowed_per_game(team_id)
     end
 
-    foo.sort_by { |k,v| v }.first[0]
+    foo.min_by { |_k, v| v }[0]
   end
 
   def worst_defense
@@ -54,12 +56,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_allowed_per_game(team_id)
     end
 
-    foo.sort_by { |k,v| v }.last[0]
+    foo.max_by { |_k, v| v }[0]
   end
 
   def highest_scoring_visitor
@@ -68,12 +70,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_away(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.first[0]
+    foo.min_by { |_k, v| -v }[0]
   end
 
   def highest_scoring_home_team
@@ -82,12 +84,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_home(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.first[0]
+    foo.min_by { |_k, v| -v }[0]
   end
 
   def lowest_scoring_visitor
@@ -96,12 +98,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_away(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.last[0]
+    foo.max_by { |_k, v| -v }[0]
   end
 
   def lowest_scoring_home_team
@@ -110,12 +112,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = average_goals_home(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.last[0]
+    foo.max_by { |_k, v| -v }[0]
   end
 
   def winningest_team
@@ -124,13 +126,13 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
 
       foo[team_name] = winning_percentage(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.first[0]
+    foo.min_by { |_k, v| -v }[0]
   end
 
   def best_fans
@@ -139,12 +141,12 @@ module LeagueStatistics
     foo = {}
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo[team_name] = home_away_winning_percent_difference(team_id)
     end
 
-    foo.sort_by { |k,v| -v }.first[0]
+    foo.min_by { |_k, v| -v }[0]
   end
 
   def worst_fans
@@ -153,21 +155,18 @@ module LeagueStatistics
     foo = []
 
     teams.each do |team|
-      team_id = team["team_id"]
-      team_name = team["teamName"]
+      team_id = team['team_id']
+      team_name = team['teamName']
       foo << team_name if better_away_record?(team_id)
     end
 
     foo
   end
 
-
   private
 
-
   def better_away_record?(team_id)
-    total_away_games_won(team_id) >
-    total_home_games_won(team_id)
+    total_away_games_won(team_id) > total_home_games_won(team_id)
   end
 
   def home_away_winning_percent_difference(team_id)
@@ -196,40 +195,42 @@ module LeagueStatistics
 
   def average_goals_away(team_id)
     away_games_played(team_id).map do |game|
-      game["away_goals"].to_i
+      game['away_goals'].to_i
     end.reduce(:+) / away_games_played(team_id).size.to_f
   end
 
   def average_goals_home(team_id)
     home_games_played(team_id).map do |game|
-      game["home_goals"].to_i
+      game['home_goals'].to_i
     end.reduce(:+) / home_games_played(team_id).size.to_f
   end
 
   def average_goals_scored_per_game(team_id)
-    average_goals_home(team_id) >
-    average_goals_away(team_id) ?
-      average_goals_home(team_id) :
+    if average_goals_home(team_id) > average_goals_away(team_id)
+      average_goals_home(team_id)
+    else
       average_goals_away(team_id)
+    end
   end
 
   def average_opponent_goals_away(team_id)
     away_games_played(team_id).map do |game|
-      game["home_goals"].to_f
+      game['home_goals'].to_f
     end.reduce(:+) / away_games_played(team_id).size
   end
 
   def average_opponent_goals_home(team_id)
     home_games_played(team_id).map do |game|
-      game["away_goals"].to_f
+      game['away_goals'].to_f
     end.reduce(:+) / home_games_played(team_id).size
   end
 
   def average_goals_allowed_per_game(team_id)
-    average_opponent_goals_home(team_id) >
-    average_opponent_goals_away(team_id) ?
-    average_opponent_goals_home(team_id).round(2) :
-    average_opponent_goals_away(team_id).round(2)
+    if average_opponent_goals_home(team_id) >
+       average_opponent_goals_away(team_id)
+      average_opponent_goals_home(team_id).round(2)
+    else
+      average_opponent_goals_away(team_id).round(2)
+    end
   end
-
 end

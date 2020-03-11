@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require 'csv'
 
+# comment
 class Parser
   def self.parse(file)
     objects = []

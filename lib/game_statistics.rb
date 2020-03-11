@@ -1,15 +1,17 @@
-module GameStatistics
+# frozen_string_literal: true
 
+# whatever
+module GameStatistics
   def highest_total_score
-    games.map { |game| total_score(game) }.sort.last
+    games.map { |game| total_score(game) }.max
   end
 
   def lowest_total_score
-    games.map { |game| total_score(game) }.sort.first
+    games.map { |game| total_score(game) }.min
   end
 
   def biggest_blowout
-    games.map { |game| difference_in_score(game) }.sort.last
+    games.map { |game| difference_in_score(game) }.max
   end
 
   def percentage_home_wins
@@ -35,7 +37,7 @@ module GameStatistics
 
   def count_of_games_by_season
     games = {}
-    seasons.each { |season| games["#{season}"] = total_season_games(season) }
+    seasons.each { |season| games[season.to_s] = total_season_games(season) }
 
     games
   end
@@ -46,21 +48,19 @@ module GameStatistics
 
   def average_goals_by_season
     average_goals = {}
-    seasons.each { |season| average_goals["#{season}"] = average_goals(season) }
+    seasons.each { |season| average_goals[season.to_s] = average_goals(season) }
 
     average_goals
   end
 
-
   private
 
-
   def seasons
-    games.map { |game| game["season"] }.uniq.sort
+    games.map { |game| game['season'] }.uniq.sort
   end
 
   def season_games(season)
-    games.select { |game| game["season"] == season }
+    games.select { |game| game['season'] == season }
   end
 
   def total_games
@@ -72,23 +72,23 @@ module GameStatistics
   end
 
   def visitor_wins(game)
-    game["home_goals"].to_i < game["away_goals"].to_i
+    game['home_goals'].to_i < game['away_goals'].to_i
   end
 
   def home_wins(game)
-    game["home_goals"].to_i > game["away_goals"].to_i
+    game['home_goals'].to_i > game['away_goals'].to_i
   end
 
   def tie(game)
-    game["home_goals"].to_i == game["away_goals"].to_i
+    game['home_goals'].to_i == game['away_goals'].to_i
   end
 
   def total_score(game)
-    game["away_goals"].to_i + game["home_goals"].to_i
+    game['away_goals'].to_i + game['home_goals'].to_i
   end
 
   def difference_in_score(game)
-    (game["away_goals"].to_i - game["home_goals"].to_i).abs
+    (game['away_goals'].to_i - game['home_goals'].to_i).abs
   end
 
   def total_goals_per_game
@@ -102,5 +102,4 @@ module GameStatistics
   def average_goals(season)
     (total_goals_per_season(season) / total_season_games(season)).round(2)
   end
-
 end

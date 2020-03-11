@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './parser'
 require_relative './game_statistics'
 require_relative './team_statistics'
@@ -5,6 +7,7 @@ require_relative './league_statistics'
 require_relative './season_statistics'
 require_relative './common'
 
+# comment
 class StatTracker
   include GameStatistics
   include TeamStatistics
@@ -25,7 +28,6 @@ class StatTracker
       instance_variable_set("@#{key}", Parser.parse(location))
     end
 
-    self.new(@teams, @games, @game_teams)
+    new(@teams, @games, @game_teams)
   end
-
 end
