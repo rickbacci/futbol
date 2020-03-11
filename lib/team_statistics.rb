@@ -143,49 +143,20 @@ module TeamStatistics
     summary = {}
 
     seasons.sort.each do |season|
-
-      away_goals_against_regular_season =
-        away_games_played(team_id, season, :regular).map do |game|
-          game["home_goals"].to_i
-        end
-      home_goals_against_regular_season =
-        home_games_played(team_id, season, :regular).map do |game|
-          game["away_goals"].to_i
-        end
-
-      away_goals_against_post_season =
-        away_games_played(team_id, season, :post).map do |game|
-          game["home_goals"].to_i
-        end
-      home_goals_against_post_season =
-        home_games_played(team_id, season, :post).map do |game|
-          game["away_goals"].to_i
-        end
-
-      # average_goals_against_regular_season
-      regular_season_goals_against =
-        away_goals_against_regular_season +
-         home_goals_against_regular_season
-
-      # average_goals_against_post_season
-      post_season_goals_against =
-        away_goals_against_post_season +
-         home_goals_against_post_season
-
       summary[season] = {
         :postseason => {
           :win_percentage => winning_percentage(team_id, season, :post),
           :total_goals_scored => total_goals_scored(team_id, season, :post),
           :total_goals_against => total_goals_against(team_id, season, :post),
           :average_goals_scored => average_goals_scored(team_id, season, :post),
-          :average_goals_against => average_goals_against_by_season(post_season_goals_against)
+          :average_goals_against => average_goals_against(team_id, season, :post)
         },
         :regular_season => {
           :win_percentage => winning_percentage(team_id, season, :regular),
           :total_goals_scored => total_goals_scored(team_id, season, :regular),
           :total_goals_against => total_goals_against(team_id, season, :regular),
           :average_goals_scored => average_goals_scored(team_id, season, :regular),
-          :average_goals_against => average_goals_against_by_season(regular_season_goals_against)
+          :average_goals_against => average_goals_against(team_id, season, :regular)
         }
       }
     end
@@ -199,6 +170,15 @@ module TeamStatistics
 
   def seasons
     games.map { |game| game["season"] }.uniq.sort
+  end
+
+  def average_goals_against(team_id, season = :all, type = :all)
+    goals_against =
+      away_goals_against(team_id, season, type) +
+      home_goals_against(team_id, season, type)
+
+    return 0.0 if goals_against.empty?
+    (goals_against.reduce(:+) / goals_against.size.to_f).round(2)
   end
 
   def average_goals_scored(team_id, season = :all, type = :all)
@@ -241,10 +221,6 @@ module TeamStatistics
      home_goals_scored(team_id, season, type)).reduce(:+) || 0
   end
 
-  def average_goals_against_by_season(goals_against)
-    return 0.0 if goals_against.empty?
-    (goals_against.reduce(:+) / goals_against.size.to_f).round(2)
-  end
 
   # by opponent
   def away_games_played_by_opponent(team_id, opponent)
