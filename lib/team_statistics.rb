@@ -2,24 +2,23 @@
 
 # comment
 module TeamStatistics
+  # A hash with key/value pairs for the following attributes:
+  # team_id, franchise_id, team_name, abbreviation, and link
+  #
   def team_info(team_id)
-    # A hash with key/value pairs for the following attributes:
-    # team_id, franchise_id, team_name, abbreviation, and link
-    teams.each do |team|
-      if team['team_id'] == team_id
-        return {
-          'abbreviation' => team['abbreviation'],
-          'franchise_id' => team['franchiseId'],
-          'link' => team['link'],
-          'team_id' => team['team_id'],
-          'team_name' => team['teamName']
-        }
-      end
-    end
+    team = teams.find { |t| t['team_id'] == team_id }
+    {
+      'abbreviation' => team['abbreviation'],
+      'franchise_id' => team['franchiseId'],
+      'link' => team['link'],
+      'team_id' => team['team_id'],
+      'team_name' => team['teamName']
+    }
   end
 
+  # Season with the highest win percentage for a team.
+  #
   def best_season(team_id)
-    # Season with the highest win percentage for a team.
     foo = {}
 
     seasons.each do |season|
@@ -29,8 +28,9 @@ module TeamStatistics
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Season with the lowest win percentage for a team.
+  #
   def worst_season(team_id)
-    # Season with the lowest win percentage for a team.
     foo = {}
 
     seasons.each do |season|
@@ -40,24 +40,31 @@ module TeamStatistics
     foo.max_by { |_k, v| -v }[0]
   end
 
+  # Average win percentage of all games for a team.
+  #
   def average_win_percentage(team_id)
-    # Average win percentage of all games for a team.
     (total_games_won(team_id) / total_games_played(team_id)).round(2)
   end
 
+  # Highest number of goals a particular team has scored in a single game.
+  #
   def most_goals_scored(team_id)
     (away_goals_scored(team_id) + home_goals_scored(team_id)).max
   end
 
+  # Lowest numer of goals a particular team has scored in a single game.
+  #
   def fewest_goals_scored(team_id)
     (away_goals_scored(team_id) + home_goals_scored(team_id)).min
   end
 
+  # Name of the opponent that has the lowest win percentage
+  # against the given team.
+  #
   def favorite_opponent(team_id)
     foo = {}
-    opponents = teams.reject { |team| team['team_id'] == team_id }
 
-    opponents.each do |opponent|
+    opponents(team_id).each do |opponent|
       opponent_name = opponent['teamName']
       foo[opponent_name] = winning_percent_by_opponent(team_id, opponent)
     end
@@ -65,11 +72,13 @@ module TeamStatistics
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the opponent that has the highest
+  # win percentage against the given team.
+  #
   def rival(team_id)
     foo = {}
-    opponents = teams.reject { |team| team['team_id'] == team_id }
 
-    opponents.each do |opponent|
+    opponents(team_id).each do |opponent|
       opponent_name = opponent['teamName']
       foo[opponent_name] = winning_percent_by_opponent(team_id, opponent)
     end
@@ -77,62 +86,45 @@ module TeamStatistics
     foo.min_by { |_k, v| v }[0]
   end
 
+  # Biggest difference between team goals and
+  # opponent goals for a win for the given team.
+  #
   def biggest_team_blowout(team_id)
     foo = {}
-    opponents = teams.reject { |team| team['team_id'] == team_id }
 
-    opponents.each do |opponent|
+    opponents(team_id).each do |opponent|
       opponent_name = opponent['teamName']
 
-      away_games_score_difference =
-        away_games_won_by_opponent(team_id, opponent).map do |game|
-          (game['away_goals'].to_i - game['home_goals'].to_i).abs
-        end
-
-      home_games_score_difference =
-        home_games_won_by_opponent(team_id, opponent).map do |game|
-          (game['away_goals'].to_i - game['home_goals'].to_i).abs
-        end
-
-      foo[opponent_name] =
-        (away_games_score_difference +
-         home_games_score_difference).first
+      foo[opponent_name] = game_score_difference_for_win(team_id, opponent)
     end
 
     foo.min_by { |_k, v| -v }[1]
   end
 
+  # Biggest difference between team goals and opponent
+  # goals for a loss for the given team.
+  #
   def worst_loss(team_id)
     foo = {}
-    opponents = teams.reject { |team| team['team_id'] == team_id }
 
-    opponents.each do |opponent|
+    opponents(team_id).each do |opponent|
       opponent_name = opponent['teamName']
 
-      away_games_score_difference =
-        away_games_lost_by_opponent(team_id, opponent).map do |game|
-          (game['away_goals'].to_i - game['home_goals'].to_i).abs
-        end
-
-      home_games_score_difference =
-        home_games_lost_by_opponent(team_id, opponent).map do |game|
-          (game['away_goals'].to_i - game['home_goals'].to_i).abs
-        end
-
-      difference =
-        (away_games_score_difference + home_games_score_difference).max
-
-      foo[opponent_name] = difference || 0
+      foo[opponent_name] =
+        game_score_difference_for_loss(team_id, opponent) || 0
     end
 
     foo.min_by { |_k, v| -v }[1]
   end
 
+  # Record (as a hash - win/loss) against all opponents
+  # with the opponents' names as keys and the win
+  # percentage against that opponent as a value.
+  #
   def head_to_head(team_id)
     foo = {}
-    opponents = teams.reject { |team| team['team_id'] == team_id }
 
-    opponents.each do |opponent|
+    opponents(team_id).each do |opponent|
       opponent_name = opponent['teamName']
       foo[opponent_name] = winning_percent_by_opponent(team_id, opponent)
     end
@@ -140,25 +132,17 @@ module TeamStatistics
     foo
   end
 
+  # For each season that the team has played, a hash that has two keys
+  # (:regular_season and :postseason), that each point to a hash with the
+  # following keys: :win_percentage, :total_goals_scored, :total_goals_against,
+  # :average_goals_scored, :average_goals_against.
   def seasonal_summary(team_id)
     summary = {}
 
     seasons.sort.each do |season|
       summary[season] = {
-        postseason: {
-          win_percentage: winning_percentage(team_id, season, :post),
-          total_goals_scored: total_goals_scored(team_id, season, :post),
-          total_goals_against: total_goals_against(team_id, season, :post),
-          average_goals_scored: average_goals_scored(team_id, season, :post),
-          average_goals_against: average_goals_against(team_id, season, :post)
-        },
-        regular_season: {
-          win_percentage: winning_percentage(team_id, season, :regular),
-          total_goals_scored: total_goals_scored(team_id, season, :regular),
-          total_goals_against: total_goals_against(team_id, season, :regular),
-          average_goals_scored: average_goals_scored(team_id, season, :regular),
-          average_goals_against: average_goals_against(team_id, season, :regular)
-        }
+        postseason: season_stats(team_id, season, :post),
+        regular_season: season_stats(team_id, season, :regular)
       }
     end
 
@@ -166,6 +150,54 @@ module TeamStatistics
   end
 
   private
+
+  def opponents(team_id)
+    teams.reject { |team| team['team_id'] == team_id }
+  end
+
+  def season_stats(team_id, season, type)
+    {
+      win_percentage: winning_percentage(team_id, season, type),
+      total_goals_scored: total_goals_scored(team_id, season, type),
+      total_goals_against: total_goals_against(team_id, season, type),
+      average_goals_scored: average_goals_scored(team_id, season, type),
+      average_goals_against: average_goals_against(team_id, season, type)
+    }
+  end
+
+  def game_score_difference_for_loss(team_id, opponent)
+    (away_games_score_difference_for_loss(team_id, opponent) +
+    home_games_score_difference_for_loss(team_id, opponent)).max
+  end
+
+  def home_games_score_difference_for_loss(team_id, opponent)
+    home_games_lost_by_opponent(team_id, opponent).map do |game|
+      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+    end
+  end
+
+  def away_games_score_difference_for_loss(team_id, opponent)
+    away_games_lost_by_opponent(team_id, opponent).map do |game|
+      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+    end
+  end
+
+  def game_score_difference_for_win(team_id, opponent)
+    (away_games_score_difference_for_win(team_id, opponent) +
+     home_games_score_difference_for_win(team_id, opponent)).first
+  end
+
+  def home_games_score_difference_for_win(team_id, opponent)
+    home_games_won_by_opponent(team_id, opponent).map do |game|
+      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+    end
+  end
+
+  def away_games_score_difference_for_win(team_id, opponent)
+    away_games_won_by_opponent(team_id, opponent).map do |game|
+      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+    end
+  end
 
   def seasons
     games.map { |game| game['season'] }.uniq.sort
