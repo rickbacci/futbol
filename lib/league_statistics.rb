@@ -2,126 +2,142 @@
 
 # comment
 module LeagueStatistics
+  # Total number of teams in the data.
   def count_of_teams
-    # Total number of teams in the data.
     teams.size
   end
 
+  # Name of the team with the highest average number
+  # of goals scored per game across all seasons.
   def best_offense
-    # Name of the team with the highest average number
-    # of goals scored per game across all seasons.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_scored_per_game(team_id)
     end
 
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the lowest average number
+  # of goals scored per game across all seasons.
+  #
   def worst_offense
-    # Name of the team with the lowest average number
-    # of goals scored per game across all seasons.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_scored_per_game(team_id)
     end
 
     foo.max_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the lowest
+  # average number of goals allowed per game across all seasons.
+  #
   def best_defense
-    # Name of the team with the lowest
-    # average number of goals allowed per game across all seasons.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_allowed_per_game(team_id)
     end
 
     foo.min_by { |_k, v| v }[0]
   end
 
+  # Name of the team with the highest average number
+  # of goals allowed per game across all seasons.
+  #
   def worst_defense
-    # Name of the team with the highest average number
-    # of goals allowed per game across all seasons.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_allowed_per_game(team_id)
     end
 
     foo.max_by { |_k, v| v }[0]
   end
 
+  # Name of the team with the highest average score per game
+  # across all seasons when they are away.
+  #
   def highest_scoring_visitor
-    # Name of the team with the highest average score per game
-    # across all seasons when they are away.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_away(team_id)
     end
 
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the highest average score per game
+  # across all seasons when they are home.
+  #
   def highest_scoring_home_team
-    # Name of the team with the highest average score per game
-    # across all seasons when they are home.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_home(team_id)
     end
 
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the lowest average score per game
+  # across all seasons when they are a visitor.
+  #
   def lowest_scoring_visitor
-    # Name of the team with the lowest average score per game
-    # across all seasons when they are a visitor.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_away(team_id)
     end
 
     foo.max_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the lowest average score per game
+  # across all seasons when they are at home.
+  #
   def lowest_scoring_home_team
-    # Name of the team with the lowest average score per game
-    # across all seasons when they are at home.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = average_goals_home(team_id)
     end
 
     foo.max_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the highest win
+  # percentage across all seasons.
+  #
   def winningest_team
-    # Name of the team with the highest win
-    # percentage across all seasons.
     foo = {}
 
     teams.each do |team|
@@ -134,28 +150,32 @@ module LeagueStatistics
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with biggest difference
+  # between home and away win percentages.
+  #
   def best_fans
-    # Name of the team with biggest difference
-    # between home and away win percentages.
     foo = {}
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo[team_name] = home_away_winning_percent_difference(team_id)
     end
 
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # List of names of all teams with
+  # better away records than home records.
+  #
   def worst_fans
-    # List of names of all teams with
-    # better away records than home records.
     foo = []
 
     teams.each do |team|
       team_id = team['team_id']
       team_name = team['teamName']
+
       foo << team_name if better_away_record?(team_id)
     end
 
