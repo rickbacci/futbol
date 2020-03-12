@@ -2,9 +2,10 @@
 
 # comment
 module SeasonStatistics
+  # Name of the team with the biggest decrease between
+  # regular season and postseason win percentage.
+  #
   def biggest_bust(season)
-    # Name of the team with the biggest decrease between
-    # regular season and postseason win percentage.
     foo = {}
 
     teams.each do |team|
@@ -20,9 +21,10 @@ module SeasonStatistics
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the team with the biggest increase between
+  # regular season and postseason win percentage.
+  #
   def biggest_surprise(season)
-    # Name of the team with the biggest increase between
-    # regular season and postseason win percentage.
     foo = {}
 
     teams.each do |team|
@@ -38,8 +40,9 @@ module SeasonStatistics
     foo.min_by { |_k, v| -v }[0]
   end
 
+  # Name of the Coach with the best win percentage for the season
+  #
   def winningest_coach(season)
-    # Name of the Coach with the best win percentage for the season
     season_game_teams = season_game_teams(season)
 
     foo = {}
@@ -74,8 +77,9 @@ module SeasonStatistics
     foo.sort_by { |k, _v| -k }.min_by { |_k, v| -v[:winning_percentage] }[0]
   end
 
+  # Name of the Coach with the worst win percentage for the season
+  #
   def worst_coach(season)
-    # Name of the Coach with the worst win percentage for the season
     season_game_teams = season_game_teams(season)
 
     foo = {}
@@ -112,8 +116,8 @@ module SeasonStatistics
       .sort_by { |k, _v| -k }.min_by { |_k, v| v[:winning_percentage] }[0]
   end
 
+  # Name of the Team with the best ratio of shots to goals for the season
   def most_accurate_team(season)
-    # Name of the Team with the best ratio of shots to goals for the season
     season_game_teams = season_game_teams(season)
     foo = {}
 
@@ -132,8 +136,8 @@ module SeasonStatistics
     foo.reject { |_k, v| v == 0.0 }.max_by { |_k, v| v }[0]
   end
 
+  # Name of the Team with the worst ratio of shots to goals for the season
   def least_accurate_team(season)
-    # Name of the Team with the worst ratio of shots to goals for the season
     season_game_teams = season_game_teams(season)
     foo = {}
 
@@ -142,7 +146,6 @@ module SeasonStatistics
       team_name = team['teamName']
 
       z = season_game_teams.select { |t| t['team_id'] == team_id }
-      # add shots and goals..figure percent
 
       goals = z.reduce(0) { |sum, v| sum + v['goals'].to_i }
       shots = z.reduce(0) { |sum, v| sum + v['shots'].to_i }
@@ -155,8 +158,8 @@ module SeasonStatistics
        .sort_by { |_k, v| v }.first[0]
   end
 
+  # Name of the Team with the most tackles in the season
   def most_tackles(season)
-    # Name of the Team with the most tackles in the season
     season_game_teams = season_game_teams(season)
     foo = {}
 
@@ -179,8 +182,8 @@ module SeasonStatistics
        .max_by { |_k, v| v[:tackles] }[0]
   end
 
+  # Name of the Team with the fewest tackles in the season
   def fewest_tackles(season)
-    # Name of the Team with the fewest tackles in the season
     season_game_teams = season_game_teams(season)
     foo = {}
 
@@ -192,11 +195,7 @@ module SeasonStatistics
 
       tackles = z.reduce(0) { |sum, v| sum + v['tackles'].to_i }
 
-      team_data = {
-        tackles: tackles
-      }
-
-      foo[team_name] = team_data
+      foo[team_name] = { tackles: tackles }
     end
 
     foo.reject { |_k, v| (v[:tackles]).zero? }
