@@ -97,7 +97,7 @@ module SeasonStatistics
 
     foo.reject { |_k, v| v == 0.0 }
        .sort_by { |k, _v| k }
-       .sort_by { |_k, v| v }.first[0]
+       .min_by { |_k, v| v }[0]
   end
 
   # Name of the Team with the most tackles in the season
