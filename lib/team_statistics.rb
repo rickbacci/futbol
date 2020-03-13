@@ -95,7 +95,7 @@ module TeamStatistics
     opponents(team_id).each do |opponent|
       opponent_name = opponent['teamName']
 
-      foo[opponent_name] = game_score_difference_for_win(team_id, opponent)
+      foo[opponent_name] = game_score_difference(team_id, opponent, :win)
     end
 
     foo.min_by { |_k, v| -v }[1]
@@ -111,7 +111,7 @@ module TeamStatistics
       opponent_name = opponent['teamName']
 
       foo[opponent_name] =
-        game_score_difference_for_loss(team_id, opponent) || 0
+        game_score_difference(team_id, opponent, :loss) || 0
     end
 
     foo.min_by { |_k, v| -v }[1]
@@ -165,38 +165,43 @@ module TeamStatistics
     }
   end
 
-  def game_score_difference_for_loss(team_id, opponent)
-    (away_games_score_difference_for_loss(team_id, opponent) +
-    home_games_score_difference_for_loss(team_id, opponent)).max
+  def game_score_difference(team_id, opponent, result)
+    case result
+    when :win
+      (away_games_score_difference_for_win(team_id, opponent) +
+      home_games_score_difference_for_win(team_id, opponent)).first
+    when :loss
+      (away_games_score_difference_for_loss(team_id, opponent) +
+      home_games_score_difference_for_loss(team_id, opponent)).max
+    end
   end
 
   def home_games_score_difference_for_loss(team_id, opponent)
     home_games_lost_by_opponent(team_id, opponent).map do |game|
-      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+      goal_difference(game)
+    end
+  end
+
+  def home_games_score_difference_for_win(team_id, opponent)
+    home_games_won_by_opponent(team_id, opponent).map do |game|
+      goal_difference(game)
     end
   end
 
   def away_games_score_difference_for_loss(team_id, opponent)
     away_games_lost_by_opponent(team_id, opponent).map do |game|
-      (game['away_goals'].to_i - game['home_goals'].to_i).abs
-    end
-  end
-
-  def game_score_difference_for_win(team_id, opponent)
-    (away_games_score_difference_for_win(team_id, opponent) +
-     home_games_score_difference_for_win(team_id, opponent)).first
-  end
-
-  def home_games_score_difference_for_win(team_id, opponent)
-    home_games_won_by_opponent(team_id, opponent).map do |game|
-      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+      goal_difference(game)
     end
   end
 
   def away_games_score_difference_for_win(team_id, opponent)
     away_games_won_by_opponent(team_id, opponent).map do |game|
-      (game['away_goals'].to_i - game['home_goals'].to_i).abs
+      goal_difference(game)
     end
+  end
+
+  def goal_difference(game)
+    (game['away_goals'].to_i - game['home_goals'].to_i).abs
   end
 
   def seasons
