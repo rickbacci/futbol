@@ -58,4 +58,8 @@ class LeagueStatisticsTest < Minitest::Test
   def test_best_fans
     assert_equal 'FC Dallas', @stat_tracker.best_fans
   end
+
+  def test_worst_fans
+    assert_equal ['Atlanta United', 'Chicago Fire'], @stat_tracker.worst_fans
+  end
 end
