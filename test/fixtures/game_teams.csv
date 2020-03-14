@@ -4,4 +4,4 @@ game_id,team_id,HoA,result,settled_in,head_coach,goals,shots,tackles,pim,powerPl
 2,3,away,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
 2,4,home,WIN,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
 3,5,away,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
-4,6,home,WIN,REG,Mike Babcock,20,6,30,10,3,1,51.7,10,8
+3,6,home,WIN,REG,Mike Babcock,20,6,30,10,3,1,51.7,10,8

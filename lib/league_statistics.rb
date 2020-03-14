@@ -241,15 +241,23 @@ module LeagueStatistics
   end
 
   def average_opponent_goals_away(team_id)
-    away_games_played(team_id).map do |game|
+    games = away_games_played(team_id).map do |game|
       game['home_goals'].to_f
-    end.reduce(:+) / away_games_played(team_id).size
+    end
+
+    return 0.0 if games.empty?
+
+    games.reduce(:+) / away_games_played(team_id).size
   end
 
   def average_opponent_goals_home(team_id)
-    home_games_played(team_id).map do |game|
+    games = home_games_played(team_id).map do |game|
       game['away_goals'].to_f
-    end.reduce(:+) / home_games_played(team_id).size
+    end
+
+    return 0.0 if games.empty?
+
+    games.reduce(:+) / home_games_played(team_id).size
   end
 
   def average_goals_allowed_per_game(team_id)

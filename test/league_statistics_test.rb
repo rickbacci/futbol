@@ -26,4 +26,8 @@ class LeagueStatisticsTest < Minitest::Test
   def test_worst_offense
     assert_equal 'Houston Dynamo', @stat_tracker.worst_offense
   end
+
+  def test_best_defense
+    assert_equal 'Chicago Fire', @stat_tracker.best_defense
+  end
 end
