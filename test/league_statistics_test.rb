@@ -50,4 +50,8 @@ class LeagueStatisticsTest < Minitest::Test
   def test_lowest_scoring_home_team
     assert_equal 'Houston Dynamo', @stat_tracker.lowest_scoring_home_team
   end
+
+  def test_winningest_team
+    assert_equal 'Chicago Fire', @stat_tracker.winningest_team
+  end
 end

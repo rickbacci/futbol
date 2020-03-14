@@ -7,5 +7,9 @@ game_id,team_id,HoA,result,settled_in,head_coach,goals,shots,tackles,pim,powerPl
 3,6,home,WIN,REG,Mike Babcock,20,6,30,10,3,1,51.7,10,8
 4,1,home,LOSS,OT,Claude Julien,1,8,44,8,3,0,44.8,17,7
 4,2,away,WIN,OT,John Tortorella,6,12,51,6,4,1,55.2,4,5
-2,3,home,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
-2,4,away,WIN,REG,Mike Babcock,3,6,30,10,3,1,51.7,10,8
+5,3,home,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
+5,4,away,WIN,REG,Mike Babcock,3,6,30,10,3,1,51.7,10,8
+6,1,away,LOSS,OT,John Tortorella,1,8,44,8,3,0,44.8,17,7
+6,2,home,WIN,OT,Claude Julien,2,12,51,6,4,1,55.2,4,5
+7,1,away,WIN,OT,John Tortorella,3,8,44,8,3,0,44.8,17,7
+7,2,home,LOSS,OT,Claude Julien,1,12,51,6,4,1,55.2,4,5
