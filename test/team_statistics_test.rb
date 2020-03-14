@@ -34,4 +34,8 @@ class TeamStatisticsTest < Minitest::Test
   def test_worst_season
     assert_equal '2021', @stat_tracker.worst_season('1')
   end
+
+  def test_average_win_percentage
+    assert_equal 0.75, @stat_tracker.average_win_percentage('2')
+  end
 end

@@ -54,8 +54,4 @@ class GameStatisticsTest < Minitest::Test
 
     assert_equal expected, @stat_tracker.average_goals_by_season
   end
-
-  def test_average_win_percentage
-    assert_equal 0.75, @stat_tracker.average_win_percentage('2')
-  end
 end
