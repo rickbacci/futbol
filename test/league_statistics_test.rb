@@ -34,4 +34,8 @@ class LeagueStatisticsTest < Minitest::Test
   def test_worst_defense
     assert_equal 'Sporting Kansas City', @stat_tracker.worst_defense
   end
+
+  def test_highest_scoring_visitor
+    assert_equal 'Seattle Sounders FC', @stat_tracker.highest_scoring_visitor
+  end
 end

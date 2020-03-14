@@ -28,11 +28,11 @@ class GameStatisticsTest < Minitest::Test
   end
 
   def test_percentage_home_wins
-    assert_equal 1.0, @stat_tracker.percentage_home_wins
+    assert_equal 0.75, @stat_tracker.percentage_home_wins
   end
 
   def test_percentage_visitor_wins
-    assert_equal 0.0, @stat_tracker.percentage_visitor_wins
+    assert_equal 0.25, @stat_tracker.percentage_visitor_wins
   end
 
   def test_percentage_ties
@@ -40,17 +40,17 @@ class GameStatisticsTest < Minitest::Test
   end
 
   def test_count_of_games_by_season
-    expected = { '2020' => 3.0 }
+    expected = { '2020' => 4.0 }
 
     assert_equal expected, @stat_tracker.count_of_games_by_season
   end
 
   def test_average_goals_per_game
-    assert_equal 8.67, @stat_tracker.average_goals_per_game
+    assert_equal 8.5, @stat_tracker.average_goals_per_game
   end
 
   def test_average_goals_by_season
-    expected = { '2020' => 8.67 }
+    expected = { '2020' => 8.5 }
 
     assert_equal expected, @stat_tracker.average_goals_by_season
   end
