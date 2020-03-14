@@ -95,7 +95,7 @@ module SeasonStatistics
       foo[team_name] = shots_to_goals_ratio(team_id, season_games)
     end
     x = foo.sort.to_h.reject { |_k, v| v == 0.0 }
-    x.sort_by { |_k, v| v }.first[0]
+    x.min_by { |_k, v| v }[0]
   end
 
   # Name of the Team with the most tackles in the season
@@ -185,6 +185,6 @@ module SeasonStatistics
 
     return 0.0 if shots.zero?
 
-    (goals / shots.to_f).round(2)
+    (goals / shots.to_f)
   end
 end
