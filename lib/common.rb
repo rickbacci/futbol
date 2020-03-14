@@ -2,6 +2,10 @@
 
 # comment
 module Common
+  def seasons
+    games.map { |game| game['season'] }.uniq.sort
+  end
+
   def season_games(season)
     games.select { |game| game['season'] == season }
   end

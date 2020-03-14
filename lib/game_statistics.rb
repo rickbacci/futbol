@@ -55,10 +55,6 @@ module GameStatistics
 
   private
 
-  def seasons
-    games.map { |game| game['season'] }.uniq.sort
-  end
-
   def total_games
     games.length.to_f
   end

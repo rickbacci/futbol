@@ -204,10 +204,6 @@ module TeamStatistics
     (game['away_goals'].to_i - game['home_goals'].to_i).abs
   end
 
-  def seasons
-    games.map { |game| game['season'] }.uniq.sort
-  end
-
   def average_goals_against(team_id, season = :all, type = :all)
     goals_against =
       away_goals_against(team_id, season, type) +
