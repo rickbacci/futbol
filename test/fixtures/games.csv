@@ -6,3 +6,4 @@ game_id,season,type,date_time,away_team_id,home_team_id,away_goals,home_goals,ve
 5,2020,Regular Season,1/1/20,4,3,3,0,BBVA Stadium,/api/v1/venues/null
 6,2020,Regular Season,1/1/20,6,5,4,15,Children's Mercy Park,/api/v1/venues/null
 7,2020,Regular Season,1/1/20,1,2,3,1,Centruy Link Field,/api/v1/venues/null
+8,2020,Regular Season,1/1/20,4,5,2,1,Toyota Stadium,/api/v1/venues/null

@@ -54,4 +54,8 @@ class LeagueStatisticsTest < Minitest::Test
   def test_winningest_team
     assert_equal 'Chicago Fire', @stat_tracker.winningest_team
   end
+
+  def test_best_fans
+    assert_equal 'FC Dallas', @stat_tracker.best_fans
+  end
 end
