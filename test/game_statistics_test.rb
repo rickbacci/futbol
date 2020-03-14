@@ -16,7 +16,7 @@ class GameStatisticsTest < Minitest::Test
   end
 
   def test_highest_total_score
-    assert_equal 20, @stat_tracker.highest_total_score
+    assert_equal 21, @stat_tracker.highest_total_score
   end
 
   def test_lowest_total_score
@@ -24,7 +24,7 @@ class GameStatisticsTest < Minitest::Test
   end
 
   def test_biggest_blowout
-    assert_equal 20, @stat_tracker.biggest_blowout
+    assert_equal 19, @stat_tracker.biggest_blowout
   end
 
   def test_percentage_home_wins
@@ -46,11 +46,11 @@ class GameStatisticsTest < Minitest::Test
   end
 
   def test_average_goals_per_game
-    assert_equal 8.33, @stat_tracker.average_goals_per_game
+    assert_equal 8.67, @stat_tracker.average_goals_per_game
   end
 
   def test_average_goals_by_season
-    expected = { '2020' => 8.33 }
+    expected = { '2020' => 8.67 }
 
     assert_equal expected, @stat_tracker.average_goals_by_season
   end
