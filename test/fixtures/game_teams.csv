@@ -15,3 +15,5 @@ game_id,team_id,HoA,result,settled_in,head_coach,goals,shots,tackles,pim,powerPl
 7,2,home,LOSS,OT,Claude Julien,1,12,51,6,4,1,55.2,4,5
 8,4,away,LOSS,REG,Joel Quenneville,2,7,22,10,3,0,48.3,8,4
 8,5,home,WIN,REG,Mike Babcock,1,6,30,10,3,1,51.7,10,8
+9,1,away,LOSS,OT,John Tortorella,1,8,44,8,3,0,44.8,17,7
+9,2,home,WIN,OT,Claude Julien,2,12,51,6,4,1,55.2,4,5
