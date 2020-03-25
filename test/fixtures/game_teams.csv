@@ -17,3 +17,17 @@ game_id,team_id,HoA,result,settled_in,head_coach,goals,shots,tackles,pim,powerPl
 8,5,home,WIN,REG,Mike Babcock,1,6,30,10,3,1,51.7,10,8
 9,1,away,LOSS,OT,John Tortorella,1,8,44,8,3,0,44.8,17,7
 9,2,home,WIN,OT,Claude Julien,2,12,51,6,4,1,55.2,4,5
+10,1,away,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
+10,4,home,WIN,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
+11,2,away,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
+11,4,home,WIN,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
+12,6,away,LOSS,REG,Joel Quenneville,0,7,22,10,3,0,48.3,8,4
+12,4,home,WIN,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
+13,1,away,WIN,REG,Joel Quenneville,7,7,22,10,3,0,48.3,8,4
+13,4,home,LOSS,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
+14,2,away,WIN,REG,Joel Quenneville,7,7,22,10,3,0,48.3,8,4
+14,4,home,LOSS,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
+15,3,away,WIN,REG,Joel Quenneville,7,7,22,10,3,0,48.3,8,4
+15,4,home,LOSS,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8
+16,5,away,WIN,REG,Joel Quenneville,7,7,22,10,3,0,48.3,8,4
+16,4,home,LOSS,REG,Mike Babcock,2,6,30,10,3,1,51.7,10,8

@@ -24,11 +24,11 @@ class LeagueStatisticsTest < Minitest::Test
   end
 
   def test_worst_offense
-    assert_equal 'Houston Dynamo', @stat_tracker.worst_offense
+    assert_equal 'Chicago Fire', @stat_tracker.worst_offense
   end
 
   def test_best_defense
-    assert_equal 'Chicago Fire', @stat_tracker.best_defense
+    assert_equal 'Seattle Sounders FC', @stat_tracker.best_defense
   end
 
   def test_worst_defense
@@ -36,7 +36,7 @@ class LeagueStatisticsTest < Minitest::Test
   end
 
   def test_highest_scoring_visitor
-    assert_equal 'Seattle Sounders FC', @stat_tracker.highest_scoring_visitor
+    assert_equal 'Sporting Kansas City', @stat_tracker.highest_scoring_visitor
   end
 
   def test_highest_scoring_home_team
@@ -44,7 +44,7 @@ class LeagueStatisticsTest < Minitest::Test
   end
 
   def test_lowest_scoring_visitor
-    assert_equal 'Houston Dynamo', @stat_tracker.lowest_scoring_visitor
+    assert_equal 'FC Dallas', @stat_tracker.lowest_scoring_visitor
   end
 
   def test_lowest_scoring_home_team
@@ -52,7 +52,7 @@ class LeagueStatisticsTest < Minitest::Test
   end
 
   def test_winningest_team
-    assert_equal 'Chicago Fire', @stat_tracker.winningest_team
+    assert_equal 'Seattle Sounders FC', @stat_tracker.winningest_team
   end
 
   def test_best_fans
@@ -60,6 +60,6 @@ class LeagueStatisticsTest < Minitest::Test
   end
 
   def test_worst_fans
-    assert_equal ['Atlanta United', 'Chicago Fire'], @stat_tracker.worst_fans
+    assert_equal ['Atlanta United', 'Houston Dynamo'], @stat_tracker.worst_fans
   end
 end

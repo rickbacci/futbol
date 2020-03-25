@@ -8,3 +8,10 @@ game_id,season,type,date_time,away_team_id,home_team_id,away_goals,home_goals,ve
 7,2020,Regular Season,1/1/20,1,2,3,1,Centruy Link Field,/api/v1/venues/null
 8,2020,Regular Season,1/1/20,4,5,2,1,Toyota Stadium,/api/v1/venues/null
 9,2021,Regular Season,1/1/20,1,2,1,3,Centruy Link Field,/api/v1/venues/null
+10,2020,Regular Season,1/4/20,1,4,0,2,SeatGeek Stadium,/api/v1/venues/null
+11,2020,Regular Season,1/4/20,2,4,0,2,SeatGeek Stadium,/api/v1/venues/null
+12,2020,Regular Season,1/4/20,6,4,0,2,SeatGeek Stadium,/api/v1/venues/null
+13,2020,Regular Season,1/4/20,1,4,7,2,SeatGeek Stadium,/api/v1/venues/null
+14,2020,Regular Season,1/4/20,2,4,7,2,SeatGeek Stadium,/api/v1/venues/null
+15,2020,Regular Season,1/4/20,3,4,7,2,SeatGeek Stadium,/api/v1/venues/null
+16,2020,Regular Season,1/4/20,5,4,7,2,SeatGeek Stadium,/api/v1/venues/null
